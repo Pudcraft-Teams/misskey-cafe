@@ -10,7 +10,9 @@
 
 ## 步骤 1: 向 ja-JP.yml 添加键
 
-编辑 [locales/ja-JP.yml](../../../../../locales/ja-JP.yml)。保持 YAML 的层级结构,放到相关的 section 中:
+编辑 [locales/ja-JP.yml](../../../../../locales/ja-JP.yml)。保持 YAML 的层级结构,放到相关的 section 中。
+
+**fork 语言规约:** 本 fork 新增键的 **值直接写简体中文**(ja-JP.yml 是全语言的回退基底,中文值会对所有语言设置的用户生效;详见 [AGENTS.md](../../../../../AGENTS.md) 语言规约)。上游既有键的日文值保持原样,不做翻译。下面示例中的日文仅为上游历史写法示意:
 
 ```yaml
 # 顶层简单键
