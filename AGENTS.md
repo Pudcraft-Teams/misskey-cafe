@@ -81,6 +81,19 @@
 
 ---
 
+## 语言规约（fork 默认简体中文）
+
+本 fork 的维护团队与用户群体均为中文社区。**所有 fork 新增的产出物默认使用简体中文**：
+
+- CHANGELOG 的 `## Unreleased` 条目正文（Prefix 仍保留英文 `Feat:` / `Enhance:` / `Fix:` / `Note:`）
+- commit message 正文、PR 标题与描述
+- 新增的代码注释与新增文档
+- fork 新增的 i18n 文案：键仍**只能**加进 `locales/ja-JP.yml`（它是 i18n 类型生成源与全语言回退基底，禁止事项第 2 条的技术规则不变），但**值直接写简体中文**——这样无论用户的语言设置如何，fork 新增的 UI 文案都会显示为中文
+
+**来自上游的内容保持原样，不做翻译**（既有日文注释、过往 CHANGELOG 条目、SPDX 头文本、Crowdin 管理的 locale 文件），以最小化合并上游时的冲突。
+
+---
+
 ## 提交变更前的最低检查
 
 各代理应参照 [shipping-misskey-change skill](.claude/skills/shipping-misskey-change/SKILL.md)。即使在无法使用 skill 的环境中，也必须完成以下检查：
@@ -89,7 +102,7 @@
 2. **变更了 backend API**: 已执行 `pnpm build-misskey-js-with-types`，并把 `packages/misskey-js/src/autogen/` 的差异一并纳入 commit
 3. **变更了 entity / migration**: `pnpm --filter backend check-migrations` 以 pending DDL 0 件通过 / 新 migration 已同时实现 `up()` 和 `down()`
 4. **新增文件**: 已添加 SPDX 头（`.vue` / `.html` 用 HTML 注释形式，其余用 TS 注释形式）
-5. **影响用户的变更**: 已在 `CHANGELOG.md` 的 `## Unreleased` 下对应子分区（`### General` / `### Client` / `### Server`）追加一行 `- <Feat|Enhance|Fix>: <概要>`
+5. **影响用户的变更**: 已在 `CHANGELOG.md` 的 `## Unreleased` 下对应子分区（`### General` / `### Client` / `### Server`）追加一行 `- <Feat|Enhance|Fix>: <概要>`（正文使用简体中文）
 6. **locale 安全**: 若编辑了 `locales/`，确认 `git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` 为空（除 ja-JP.yml 外无差异）
 
 ### 验证命令

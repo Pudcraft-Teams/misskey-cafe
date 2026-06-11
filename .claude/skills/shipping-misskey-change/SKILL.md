@@ -21,7 +21,7 @@ Misskey 变更的 **收尾局面** (commit / PR / merge 之前,或者未提交�
 - [ ] 新增了 migration 文件 → `up()` 和 `down()` 都已实现 / 完全没有改动已合并的现有 migration (为了持续合并上游,已合并的 migration 视为不可变)
 - [ ] 新增了 `.ts` / `.js` / `.cjs` / `.mjs` / `.vue` / `.scss` / `.html` 文件 → 已加上 SPDX 头 (`.vue` / `.html` 用 HTML 注释形式,其余用 TS 注释形式)
 - [ ] 编辑了 `locales/` → **只改了 `ja-JP.yml`**,没有产生其他语言 yml 的 diff (`git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` 为空)。其他语言文件由上游 Crowdin 管理,改了会在下次同步时被覆盖丢失
-- [ ] 用户可见的变更 (新增功能 / 修改既有行为) → 已在 `CHANGELOG.md` 的 `## Unreleased` 正下方对应子小节 (General / Client / Server) 追加 1 行 → 详细格式见 [references/tasks/changelog-update.md](references/tasks/changelog-update.md)
+- [ ] 用户可见的变更 (新增功能 / 修改既有行为) → 已在 `CHANGELOG.md` 的 `## Unreleased` 正下方对应子小节 (General / Client / Server) 追加 1 行,正文使用简体中文 → 详细格式见 [references/tasks/changelog-update.md](references/tasks/changelog-update.md)
 - [ ] 新增、修改了 backend API endpoint → 用 Task 启动 [misskey-api-reviewer](../../agents/misskey-api-reviewer.md) agent 做机械审查 (endpoint-list 漏注册 / misskey-js 漏再生成 / meta、UUID / SPDX。这是 lint 和 CI 难以捕捉的 404、漏注册的最后一道关卡,有相关变更就不要跳过)
 - [ ] 新增、修改了 frontend 的 `.vue` → 用 Task 启动 [vue-component-reviewer](../../agents/vue-component-reviewer.md) agent 做机械审查 (SPDX 形式 / 命名 / i18n / SCSS 变量 / os.* / a11y / Storybook 配套)
 - [ ] (可选) 想确认 `.claude/` harness 自身的健全性 → 执行 ECC 来源的 [/harness-audit](../../commands/harness-audit.md) 命令

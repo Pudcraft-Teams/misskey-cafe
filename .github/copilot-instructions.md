@@ -47,13 +47,17 @@
 - 未经用户明确指示，不得 merge / close / force-push 任何 PR
 - 未经用户明确指示，不得向 external service（GitHub 评论 / Slack / 邮件等）发送内容
 
+## 语言规约（fork 默认简体中文）
+
+本 fork 的维护团队与用户群体均为中文社区。所有 fork 新增的产出物默认使用简体中文：CHANGELOG 的 `## Unreleased` 条目正文（Prefix 保留英文 `Feat:` / `Enhance:` / `Fix:` / `Note:`）、commit message 正文、PR 标题与描述、新增代码注释与新增文档。fork 新增的 i18n 键仍只能加进 `locales/ja-JP.yml`（类型生成源与全语言回退基底），但值直接写简体中文。来自上游的内容（既有日文注释、过往 CHANGELOG 条目、SPDX 头、Crowdin 管理的 locale 文件）保持原样不翻译，以减少合并上游时的冲突。
+
 ## 提交变更前的最低检查
 
 1. `pnpm lint` 通过（typecheck + eslint，全部包）
 2. backend 中变更了 `meta` / `paramDef` / `res` → 已执行 `pnpm build-misskey-js-with-types`，并把 `packages/misskey-js/src/autogen/` 的差异一并纳入 commit
 3. 变更了 entity / migration → `pnpm --filter backend check-migrations` 以 pending DDL 0 件通过 / 新 migration 已同时实现 `up()` 与 `down()`
 4. 新增了 `.ts` / `.js` / `.cjs` / `.mjs` / `.vue` / `.scss` / `.html` 文件 → 已添加 SPDX 头
-5. 影响用户的变更 → 已在 `CHANGELOG.md` 的 `## Unreleased` 下对应子分区（`### General` / `### Client` / `### Server`）追加一行 `- <Feat|Enhance|Fix>: <概要>`
+5. 影响用户的变更 → 已在 `CHANGELOG.md` 的 `## Unreleased` 下对应子分区（`### General` / `### Client` / `### Server`）追加一行 `- <Feat|Enhance|Fix>: <概要>`（正文使用简体中文）
 6. 编辑了 `locales/` 时，确认 `git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` 为空（除 ja-JP.yml 外无差异）
 
 ## 验证命令
