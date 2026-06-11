@@ -60,6 +60,7 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
+import { isUnicodeEmojiDisabled } from '@/utility/disabled-unicode-emojis.js';
 import { prefer } from '@/preferences.js';
 
 export type CompleteInfo = {
@@ -100,7 +101,7 @@ const unicodeEmojiDB = computed(() => {
 	//#region Unicode Emoji
 	const char2path = prefer.r.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
-	const unicodeEmojiDB: EmojiDef[] = lib.map(x => ({
+	const unicodeEmojiDB: EmojiDef[] = lib.filter(x => !isUnicodeEmojiDisabled(x.char)).map(x => ({
 		emoji: x.char,
 		name: x.name,
 		url: char2path(x.char),
@@ -108,6 +109,7 @@ const unicodeEmojiDB = computed(() => {
 
 	for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 		for (const [emoji, keywords] of Object.entries(index)) {
+			if (isUnicodeEmojiDisabled(emoji)) continue;
 			for (const k of keywords) {
 				unicodeEmojiDB.push({
 					emoji: emoji,

@@ -42,6 +42,12 @@ export const meta = {
 			code: 'CANNOT_REACT_TO_RENOTE',
 			id: 'eaccdc08-ddef-43fe-908f-d108faad57f5',
 		},
+
+		cannotReactWithDisabledEmoji: {
+			message: 'Cannot react with an emoji that is disabled on this server.',
+			code: 'CANNOT_REACT_WITH_DISABLED_EMOJI',
+			id: 'e055d2ad-8419-404b-84f8-333af0f33191',
+		},
 	},
 } as const;
 
@@ -69,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') throw new ApiError(meta.errors.alreadyReacted);
 				if (err.id === 'e70412a4-7197-4726-8e74-f3e0deb92aa7') throw new ApiError(meta.errors.youHaveBeenBlocked);
 				if (err.id === '12c35529-3c79-4327-b1cc-e2cf63a71925') throw new ApiError(meta.errors.cannotReactToRenote);
+				if (err.id === 'e055d2ad-8419-404b-84f8-333af0f33191') throw new ApiError(meta.errors.cannotReactWithDisabledEmoji);
 				throw err;
 			});
 			return;
