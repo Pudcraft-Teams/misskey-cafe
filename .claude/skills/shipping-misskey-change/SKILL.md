@@ -1,6 +1,6 @@
 ---
 name: shipping-misskey-change
-description: 在 Misskey 变更的每个收尾时刻——commit、开 PR、merge、或未提交就把工作交还用户之前——必须使用。运行发布前的最终检查清单——`pnpm lint`、backend API 变更时重新生成 misskey-js (`pnpm build-misskey-js-with-types`)、entity 或 migration 变更时执行 `pnpm --filter backend check-migrations`、新文件的 SPDX 头校验、locale 安全检查 (不编辑非 `ja-JP` 的 locale yml 文件)、以及用户可见变更在 `CHANGELOG.md` 的 Unreleased 条目。必须作为每次变更的最后一步参考——包括未提交的交接——以避免 CI 失败和翻译丢失。即使已调用 brainstorming、writing-plans 或其他上游技能也不豁免——无论此前执行过什么都要调用本技能。
+description: 在 Misskey 变更的每个收尾时刻——commit、开 PR、merge、或未提交就把工作交还用户之前——必须使用。运行发布前的最终检查清单——`pnpm lint`、backend API 变更时重新生成 misskey-js (`pnpm build-misskey-js-with-types`)、entity 或 migration 变更时执行 `pnpm --filter backend check-migrations`、新文件的 SPDX 头校验、locale 安全检查 (fork 只编辑 `zh-CN.yml`,其余 locale yml 含 `ja-JP.yml` 均保持零差异)、以及用户可见变更在 `CHANGELOG.md` 的 Unreleased 条目。必须作为每次变更的最后一步参考——包括未提交的交接——以避免 CI 失败和翻译丢失。即使已调用 brainstorming、writing-plans 或其他上游技能也不豁免——无论此前执行过什么都要调用本技能。
 ---
 
 # shipping-misskey-change
@@ -20,7 +20,7 @@ Misskey 变更的 **收尾局面** (commit / PR / merge 之前,或者未提交�
 - [ ] 修改了实体 (`packages/backend/src/models/*.ts` 中的 `@Column` / `@Entity` / `@Index`) → `pnpm --filter backend check-migrations` 以 pending DDL 0 件通过
 - [ ] 新增了 migration 文件 → `up()` 和 `down()` 都已实现 / 完全没有改动已合并的现有 migration (为了持续合并上游,已合并的 migration 视为不可变)
 - [ ] 新增了 `.ts` / `.js` / `.cjs` / `.mjs` / `.vue` / `.scss` / `.html` 文件 → 已加上 SPDX 头 (`.vue` / `.html` 用 HTML 注释形式,其余用 TS 注释形式)
-- [ ] 编辑了 `locales/` → **只改了 `ja-JP.yml`**,没有产生其他语言 yml 的 diff (`git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` 为空)。其他语言文件由上游 Crowdin 管理,改了会在下次同步时被覆盖丢失
+- [ ] 编辑了 `locales/` → **只改了 `zh-CN.yml`**(fork 唯一直接维护的 locale 文件),没有产生其他 yml 的 diff (`git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/zh-CN\.yml$'` 为空)。ja-JP.yml 是上游键源必须保持零差异;其他语言文件由上游 Crowdin 管理,改了会在下次同步时被覆盖丢失
 - [ ] 用户可见的变更 (新增功能 / 修改既有行为) → 已在 `CHANGELOG.md` 的 `## Unreleased` 正下方对应子小节 (General / Client / Server) 追加 1 行,正文使用简体中文 → 详细格式见 [references/tasks/changelog-update.md](references/tasks/changelog-update.md)
 - [ ] 新增、修改了 backend API endpoint → 用 Task 启动 [misskey-api-reviewer](../../agents/misskey-api-reviewer.md) agent 做机械审查 (endpoint-list 漏注册 / misskey-js 漏再生成 / meta、UUID / SPDX。这是 lint 和 CI 难以捕捉的 404、漏注册的最后一道关卡,有相关变更就不要跳过)
 - [ ] 新增、修改了 frontend 的 `.vue` → 用 Task 启动 [vue-component-reviewer](../../agents/vue-component-reviewer.md) agent 做机械审查 (SPDX 形式 / 命名 / i18n / SCSS 变量 / os.* / a11y / Storybook 配套)

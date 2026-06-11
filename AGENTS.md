@@ -44,10 +44,11 @@
    -->
    ```
 
-2. **不得手动编辑 `locales/ja-JP.yml` 以外的 locale YAML**
-   - 其他语言文件（`en-US.yml` 等所有非 `ja-JP.yml` 文件）由上游通过 Crowdin 自动分发，随上游合并进入本 fork。手动编辑会在下次合并上游时被覆盖丢失或产生冲突
+2. **不得手动编辑 `locales/zh-CN.yml` 以外的 locale YAML**
+   - 本 fork 只直接维护 `zh-CN.yml`：fork 特有键加在这里（中文文案，同时是全语言的最终回退与 i18n 类型生成的并入源，实现见 `packages/i18n/src/index.ts` 与 `packages/i18n/scripts/generateLocaleInterface.ts`）
+   - `ja-JP.yml` 是上游的键源，**fork 不动它**（保持与上游零差异，随上游合并更新）；其他语言文件（`en-US.yml` 等）由上游通过 Crowdin 自动分发，手动编辑会在下次合并上游时被覆盖丢失或产生冲突
    - 依据：[locales/README.md](locales/README.md) 与 [crowdin.yml](crowdin.yml)（`ja-JP.yml` → `locales/%locale%.yml` 的同步配置）
-   - 想改进翻译请前往上游 Crowdin 项目，而不是直接改文件
+   - 上游键的翻译改进请前往上游 Crowdin 项目；fork 特有键的其他语言翻译欢迎贡献者以 PR 提供（人工审查合入，AI 代理不要代劳）
 
 3. **不得编辑已合并的 migration 文件**
    - 对象：`packages/backend/migration/{unixMs}-{name}.js` 中已经合并进 `develop` / `master` 的文件（包括从上游合并进来的全部 migration）
@@ -88,7 +89,7 @@
 - CHANGELOG 的 `## Unreleased` 条目正文（Prefix 仍保留英文 `Feat:` / `Enhance:` / `Fix:` / `Note:`）
 - commit message 正文、PR 标题与描述
 - 新增的代码注释与新增文档
-- fork 新增的 i18n 文案：键仍**只能**加进 `locales/ja-JP.yml`（它是 i18n 类型生成源与全语言回退基底，禁止事项第 2 条的技术规则不变），但**值直接写简体中文**——这样无论用户的语言设置如何，fork 新增的 UI 文案都会显示为中文
+- fork 新增的 i18n 文案：键**只加进 `locales/zh-CN.yml`**，值写简体中文。类型生成会自动并入 zh-CN 独有的键，最终回退语言也是 zh-CN，因此所有语言的用户都能看到 fork 文案（中文）。**不要把 fork 键写进 ja-JP.yml**（禁止事项第 2 条）；其他语言翻译由贡献者 PR 提供
 
 **来自上游的内容保持原样，不做翻译**（既有日文注释、过往 CHANGELOG 条目、SPDX 头文本、Crowdin 管理的 locale 文件），以最小化合并上游时的冲突。
 
@@ -103,7 +104,7 @@
 3. **变更了 entity / migration**: `pnpm --filter backend check-migrations` 以 pending DDL 0 件通过 / 新 migration 已同时实现 `up()` 和 `down()`
 4. **新增文件**: 已添加 SPDX 头（`.vue` / `.html` 用 HTML 注释形式，其余用 TS 注释形式）
 5. **影响用户的变更**: 已在 `CHANGELOG.md` 的 `## Unreleased` 下对应子分区（`### General` / `### Client` / `### Server`）追加一行 `- <Feat|Enhance|Fix>: <概要>`（正文使用简体中文）
-6. **locale 安全**: 若编辑了 `locales/`，确认 `git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` 为空（除 ja-JP.yml 外无差异）
+6. **locale 安全**: 若编辑了 `locales/`，确认 `git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/zh-CN\.yml$'` 为空（除 zh-CN.yml 外无差异，ja-JP.yml 也必须保持零差异）
 
 ### 验证命令
 
