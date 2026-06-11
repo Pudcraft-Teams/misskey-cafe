@@ -1,16 +1,16 @@
-# NestJS DI / module 登録パターン
+# NestJS DI / module 注册模式
 
-Misskey の backend は NestJS 11 + Fastify 5 + TypeORM 1 (PostgreSQL) + Redis の構成。DI コンテナと Repository パターンが軸。
+Misskey 的 backend 是 NestJS 11 + Fastify 5 + TypeORM 1 (PostgreSQL) + Redis 的构成。以 DI 容器和 Repository 模式为核心。
 
-## アーキテクチャ
+## 架构
 
-- **DI コンテナ**: NestJS の `@Injectable()` サービス + Repository (TypeORM) パターン
-- **DI トークン**: [`@/di-symbols.js`](../../../../../packages/backend/src/di-symbols.ts) の `DI` から `@Inject(DI.xxx)` で注入
-- **ビルド**: `rolldown -c` で `built/` にバンドル。型チェックは `tsgo`
+- **DI 容器**: NestJS 的 `@Injectable()` service + Repository (TypeORM) 模式
+- **DI token**: 从 [`@/di-symbols.js`](../../../../../packages/backend/src/di-symbols.ts) 的 `DI` 用 `@Inject(DI.xxx)` 注入
+- **构建**: 用 `rolldown -c` 打包到 `built/`。类型检查用 `tsgo`
 
-## エンドポイント内での DI
+## endpoint 内的 DI
 
-API endpoint は `Endpoint<typeof meta, typeof paramDef>` を extends するクラスとして書く。`@Injectable()` を付けてコンストラクタで Repository / Service を `@Inject(DI.xxx)` で注入する。
+API endpoint 写成 extends `Endpoint<typeof meta, typeof paramDef>` 的类。加 `@Injectable()`，在构造函数中用 `@Inject(DI.xxx)` 注入 Repository / Service。
 
 ```ts
 import { Inject, Injectable } from '@nestjs/common';
@@ -23,31 +23,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-		// 他にも RoleService, UserEntityService, GlobalEventService 等を必要なだけ inject
+		// 还可按需 inject RoleService, UserEntityService, GlobalEventService 等
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// this.notesRepository.findOneBy(...) のように使う
+			// 像 this.notesRepository.findOneBy(...) 这样使用
 		});
 	}
 }
 ```
 
-`// eslint-disable-line import/no-default-export` は Endpoint のお約束 (NestJS が default export を要求する一方で、ESLint ルールでは制約されているため)。
+`// eslint-disable-line import/no-default-export` 是 Endpoint 的惯例 (因为 NestJS 要求 default export，而 ESLint 规则对此有限制)。
 
-## 主要 DI トークン
+## 主要 DI token
 
-`@/di-symbols.js` から提供される。代表例:
+由 `@/di-symbols.js` 提供。代表性示例:
 
-| トークン | 型 | 用途 |
+| token | 类型 | 用途 |
 |---|---|---|
-| `DI.notesRepository` | `NotesRepository` | notes テーブルの TypeORM Repository |
-| `DI.usersRepository` | `UsersRepository` | users テーブル |
-| `DI.driveFilesRepository` | `DriveFilesRepository` | drive_file テーブル |
-| `DI.config` | `Config` | アプリ設定 |
-| `DI.redis` | `Redis` | Redis クライアント |
-| `DI.db` | `DataSource` | TypeORM DataSource (raw SQL を打ちたい時) |
+| `DI.notesRepository` | `NotesRepository` | notes 表的 TypeORM Repository |
+| `DI.usersRepository` | `UsersRepository` | users 表 |
+| `DI.driveFilesRepository` | `DriveFilesRepository` | drive_file 表 |
+| `DI.config` | `Config` | 应用配置 |
+| `DI.redis` | `Redis` | Redis 客户端 |
+| `DI.db` | `DataSource` | TypeORM DataSource (想打 raw SQL 时) |
 
-Service 系 (例: `NoteCreateService`, `RoleService`, `UserEntityService`) は **トークン経由ではなく型をそのまま inject** する:
+Service 类 (例如 `NoteCreateService`, `RoleService`, `UserEntityService`) **不经由 token，而是直接按类型 inject**:
 
 ```ts
 constructor(
@@ -56,9 +56,9 @@ constructor(
 ) {}
 ```
 
-## Service クラスの書き方
+## Service 类的写法
 
-Service は `@Injectable()` を付け、必要な依存をコンストラクタで宣言する。NestJS の module (`packages/backend/src/core/CoreModule.ts` 等) に provider として登録される必要がある。
+Service 加 `@Injectable()`，在构造函数中声明所需依赖。需要作为 provider 注册到 NestJS 的 module (`packages/backend/src/core/CoreModule.ts` 等)。
 
 ```ts
 @Injectable()
@@ -77,21 +77,21 @@ export class MyService {
 }
 ```
 
-新規 Service を追加する場合は **module 側の `providers` 配列にも追加** する必要がある。既存 Service が `CoreModule` に登録されているか確認するのが手っ取り早い。
+新增 Service 时，需要 **同时把它加到 module 侧的 `providers` 数组**。确认现有 Service 是否注册在 `CoreModule` 中是最快的办法。
 
-## Module 構造
+## Module 结构
 
-主要 module は以下:
+主要 module 如下:
 
-- **CoreModule** (`src/core/CoreModule.ts`) — Service 群を集約
-- **EndpointsModule** (`src/server/api/EndpointsModule.ts`) — endpoint-list.ts を `Object.entries()` で反復して NestJS provider (`provide: 'ep:<path>'`) を自動生成
-- **GlobalModule** (`src/GlobalModule.ts`) — Repository / Config / Redis / DataSource など低レベル依存
-- **QueueModule** (`src/core/QueueModule.ts`) — BullMQ ジョブキュー
+- **CoreModule** (`src/core/CoreModule.ts`) — 汇集各 Service
+- **EndpointsModule** (`src/server/api/EndpointsModule.ts`) — 用 `Object.entries()` 遍历 endpoint-list.ts，自动生成 NestJS provider (`provide: 'ep:<path>'`)
+- **GlobalModule** (`src/GlobalModule.ts`) — Repository / Config / Redis / DataSource 等底层依赖
+- **QueueModule** (`src/core/QueueModule.ts`) — BullMQ 任务队列
 
-新規 endpoint 追加時に module への明示的な登録は不要 ([knowledge/endpoint-list.md](endpoint-list.md) 参照)。新規 Service 追加時は CoreModule (または該当 module) に provider 登録が必要。
+新增 endpoint 时无需向 module 显式注册 (见 [knowledge/endpoint-list.md](endpoint-list.md))。新增 Service 时需要在 CoreModule (或对应 module) 注册 provider。
 
-## 既存例 (DI / 例外処理が綺麗な参考実装)
+## 现有示例 (DI / 异常处理整洁的参考实现)
 
-- [endpoints/notes/create.ts](../../../../../packages/backend/src/server/api/endpoints/notes/create.ts) — Service を型注入 (`NoteEntityService` / `NoteCreateService`) + `meta.errors` + `try/catch` で業務エラー変換 + 末尾 `throw err;` の二段構え
-- [endpoints/i/pin.ts](../../../../../packages/backend/src/server/api/endpoints/i/pin.ts) — `.catch(err => { ... throw err; })` で同様にエラー変換
-- [endpoints/notes/global-timeline.ts](../../../../../packages/backend/src/server/api/endpoints/notes/global-timeline.ts) — `RoleService.getUserPolicies()` で動的ポリシー判定
+- [endpoints/notes/create.ts](../../../../../packages/backend/src/server/api/endpoints/notes/create.ts) — 按类型注入 Service (`NoteEntityService` / `NoteCreateService`) + `meta.errors` + 用 `try/catch` 转换业务错误 + 末尾 `throw err;` 的两段式
+- [endpoints/i/pin.ts](../../../../../packages/backend/src/server/api/endpoints/i/pin.ts) — 用 `.catch(err => { ... throw err; })` 同样地转换错误
+- [endpoints/notes/global-timeline.ts](../../../../../packages/backend/src/server/api/endpoints/notes/global-timeline.ts) — 用 `RoleService.getUserPolicies()` 做动态策略判定

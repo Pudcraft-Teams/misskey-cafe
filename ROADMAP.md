@@ -1,40 +1,15 @@
-# Roadmap
-The order of individual tasks is a guide only and is subject to change depending on the situation.
-Also, the later tasks are more indefinite and are subject to change as development progresses.
+# 路线图
 
-## (1) Improve maintainability \<current phase\>
-This is the phase we are at now. We need to make a high-maintenance environment that can withstand future development.
+## 本 fork 的策略
 
-- ~~Make the number of type errors zero (backend)~~ → Done ✔️
-- ~~Make the number of type errors zero (frontend)~~ → Done ✔️
-- Improve CI
-	- ~~Fix tests~~ → Done ✔️
-	- Fix random test failures - https://github.com/misskey-dev/misskey/issues/7985 and https://github.com/misskey-dev/misskey/issues/7986
-	- Add more tests
-		- ~~May need to implement a mechanism that allows for DI~~ → Done ✔️
-			- https://github.com/misskey-dev/misskey/pull/9085
-	- ~~Measure coverage~~ → Done ✔️
-		- https://github.com/misskey-dev/misskey/pull/9081
-- Improve documentation
-- Refactoring
-	- Extract the logic of each endpoint definition into a service and just call it
+misskey-cafe 是 [misskey-dev/misskey](https://github.com/misskey-dev/misskey) 的 fork，基本策略是：
 
-## (2) Improve functionality
-Once Phase 1 is complete and an environment conducive to the development of a stable system is in place, the implementation of new functions can begin gradually.
+1. **跟随上游**: 持续合并上游 `develop` 分支，保持与上游的最小偏移，使合并成本可控
+2. **最小化定制**: fork 自身的改动尽量保持小而内聚；对上游也有价值的改动优先考虑向上游提 PR，而不是留在 fork 里
+3. **fork 专属功能**: 仅保留与本实例运营相关、不适合进上游的定制
 
-- Improve features for moderation
-- ~~OAuth2 support https://github.com/misskey-dev/misskey/issues/8262~~ → Done ✔️
-- GraphQL support?
+fork 自身的具体功能计划通过本仓库的 [Issues](https://github.com/Pudcraft-Teams/misskey-cafe/issues) 与 [Discussions](https://github.com/Pudcraft-Teams/misskey-cafe/discussions) 管理。
 
-## (3) Improve scalability
-Once the development of the feature has settled down, this may be an opportunity to make larger modifications.
+## 上游路线图
 
-- Rewriting in Rust?
-
-## (4) Change the world
-It is time to promote Misskey and change the world.
-
-- Become more major than services such as Twitter and become critical infrastructure for the world
-- MiOS will be developed and integrated into various systems - What is MiOS?
-- Letting Ai-chan interfere with the real world
-- Make Misskey a member of GAFA; Misskey's office must be a reinforced concrete brutalist building with a courtyard.
+Misskey 本体的开发路线见上游 [ROADMAP.md](https://github.com/misskey-dev/misskey/blob/develop/ROADMAP.md)。上游当前处于「提升可维护性」阶段，后续阶段（功能完善、可扩展性）的进展会随上游合并自然进入本 fork。

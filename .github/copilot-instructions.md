@@ -1,16 +1,16 @@
-# Copilot Instructions for Misskey
+# misskey-cafe 的 Copilot Instructions
 
-このファイルは GitHub Copilot の repository-wide instructions として使われる。Copilot code review では `AGENTS.md` が読まれない環境があるため、レビューや軽微な実装判断に必要な規約はこのファイル単体で満たすこと。
+本文件作为 GitHub Copilot 的 repository-wide instructions 使用。由于 Copilot code review 在某些环境下不会读取 `AGENTS.md`，凡是 review 与轻量实现判断所需的规约，本文件必须单独自足。
 
-リポジトリは Misskey の pnpm workspace モノレポ。主要な実装は `packages/backend` (NestJS / TypeORM) と `packages/frontend` (Vue 3) にある。より詳しいガイドはリポジトリルートの `AGENTS.md` を参照してよいが、このファイルの要件を省略してそちらへの参照だけで済ませないこと。
+本仓库是 **misskey-cafe**（Pudcraft-Teams 维护的 Misskey fork，上游为 misskey-dev/misskey，持续合并上游 `develop`）。仓库是 pnpm workspace 单一仓库（monorepo），主要实现位于 `packages/backend`（NestJS / TypeORM）与 `packages/frontend`（Vue 3）。更详细的指南可参考仓库根目录的 `AGENTS.md`，但不得省略本文件的要求而只给出对该文件的引用。
 
-## 絶対にやってはいけない事
+## 绝对禁止事项
 
-違反すると CI 失敗 / 本番事故 になる。
+违反会导致 CI 失败 / 生产事故。
 
-### コード・データ関連
+### 代码与数据
 
-- **SPDX ヘッダー必須**: AGPL-3.0-only 管轄かつ SPDX CI 対象ディレクトリに新規 `.ts` / `.js` / `.cjs` / `.mjs` / `.scss` / `.vue` / `.html` ファイルを追加する場合は冒頭に必ず付ける。詳細な対象判定は `.github/workflows/check-spdx-license-id.yml` を参照。
+- **SPDX 头必须存在**: 在 AGPL-3.0-only 管辖且属于 SPDX CI 检查范围的目录中新增 `.ts` / `.js` / `.cjs` / `.mjs` / `.scss` / `.vue` / `.html` 文件时，开头必须带上以下头部。详细判定范围见 `.github/workflows/check-spdx-license-id.yml`。头部文本（含 `syuilo and misskey-project`）为上游版权声明，fork 也原样沿用。
 
   ```text
   /*
@@ -19,7 +19,7 @@
    */
   ```
 
-  新規 `.vue` / `.html` ファイルは HTML コメント形式で:
+  新增 `.vue` / `.html` 文件用 HTML 注释形式:
 
   ```text
   <!--
@@ -28,53 +28,53 @@
   -->
   ```
 
-  `packages/misskey-js` は MIT ライセンスのサブパッケージなので、この AGPL ヘッダーを一律に付けない (サブパッケージ固有の `package.json` / `LICENSE` / 既存ファイルのヘッダーに従う)。
+  `packages/misskey-js` 是 MIT 许可的子包，不要一律套用此 AGPL 头（遵循子包自身的 `package.json` / `LICENSE` / 既有文件头）。
 
-- **`locales/ja-JP.yml` 以外の locale YAML を編集しない**。他言語ファイル (`en-US.yml` など `ja-JP.yml` 以外すべて) は Crowdin の自動配信先で、手動編集すると次の同期で上書き喪失する。
-- **マージ済 migration を編集しない**。`packages/backend/migration/{timestamp}-*.js` のうち既に `develop` / `master` に入ったものは絶対に変更しない。スキーマ変更が必要なら新しい timestamp で新規ファイルを追加し、`up()` と `down()` の両方を実装する。
-- **secrets / 認証情報をリポジトリにコミットしない** (`.config/*.yml` の本番値、`.env` ファイル、API token、private key 等)。
+- **不得编辑 `locales/ja-JP.yml` 以外的 locale YAML**。其他语言文件（`en-US.yml` 等所有非 `ja-JP.yml` 文件）由上游通过 Crowdin 自动分发并随上游合并进入本 fork，手动编辑会在合并上游时被覆盖丢失。
+- **不得编辑已合并的 migration**。`packages/backend/migration/{timestamp}-*.js` 中已进入 `develop` / `master` 的文件（含来自上游的全部 migration）绝不可改动。需要变更 schema 时用新 timestamp 新建文件，并同时实现 `up()` 与 `down()`。
+- **不得把 secrets / 凭据提交进仓库**（`.config/*.yml` 的生产值、`.env` 文件、API token、private key 等）。
 
-### Git / リポジトリ操作
+### Git / 仓库操作
 
-- `git push --force` / `--force-with-lease` を `main` / `develop` / `master` にしない
-- `git commit --no-verify` で hook をスキップしない
-- マージ済 / プッシュ済コミットを `git commit --amend` で書き換えない
-- 他人のブランチを `git reset --hard` / `git branch -D` で破壊しない
-- `git config` をユーザーに無断で書き換えない (特に `user.name` / `user.email` / `commit.gpgsign`)
+- 不得对 `main` / `develop` / `master` 执行 `git push --force` / `--force-with-lease`
+- 不得用 `git commit --no-verify` 跳过 hook
+- 不得用 `git commit --amend` 改写已合并 / 已推送的 commit
+- 不得用 `git reset --hard` / `git branch -D` 破坏他人分支
+- 不得未经用户许可改写 `git config`（尤其是 `user.name` / `user.email` / `commit.gpgsign`）
 
-### Issue / PR / 外部送信
+### Issue / PR / 对外发送
 
-- ユーザーの明示指示なしに PR を merge / close / force-push しない
-- ユーザーの明示指示なしに external service (GitHub comments / Slack / メール 等) へ送信しない
+- 未经用户明确指示，不得 merge / close / force-push 任何 PR
+- 未经用户明确指示，不得向 external service（GitHub 评论 / Slack / 邮件等）发送内容
 
-## 変更を出す前の最低チェック
+## 提交变更前的最低检查
 
-1. `pnpm lint` が通る (typecheck + eslint, 全パッケージ)
-2. backend で `meta` / `paramDef` / `res` を変更した → `pnpm build-misskey-js-with-types` を実行し `packages/misskey-js/src/autogen/` の差分も commit に含めた
-3. entity / migration を変更した → `pnpm --filter backend check-migrations` が pending DDL 0 件で通る / 新規 migration は `up()` と `down()` 両方実装済
-4. 新規 `.ts` / `.js` / `.cjs` / `.mjs` / `.vue` / `.scss` / `.html` ファイルを追加した → SPDX ヘッダーを付けた
-5. ユーザー影響のある変更 → `CHANGELOG.md` の `## Unreleased` 配下の該当サブセクション (`### General` / `### Client` / `### Server`) に `- <Feat|Enhance|Fix>: <概要>` を 1 行追記
-6. `locales/` を編集した場合、`git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` が空 (ja-JP.yml 以外に差分が無い) ことを確認
+1. `pnpm lint` 通过（typecheck + eslint，全部包）
+2. backend 中变更了 `meta` / `paramDef` / `res` → 已执行 `pnpm build-misskey-js-with-types`，并把 `packages/misskey-js/src/autogen/` 的差异一并纳入 commit
+3. 变更了 entity / migration → `pnpm --filter backend check-migrations` 以 pending DDL 0 件通过 / 新 migration 已同时实现 `up()` 与 `down()`
+4. 新增了 `.ts` / `.js` / `.cjs` / `.mjs` / `.vue` / `.scss` / `.html` 文件 → 已添加 SPDX 头
+5. 影响用户的变更 → 已在 `CHANGELOG.md` 的 `## Unreleased` 下对应子分区（`### General` / `### Client` / `### Server`）追加一行 `- <Feat|Enhance|Fix>: <概要>`
+6. 编辑了 `locales/` 时，确认 `git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'` 为空（除 ja-JP.yml 外无差异）
 
-## Validation コマンド
+## 验证命令
 
-- 全体ビルド: `pnpm build`
-- 全体 lint / typecheck: `pnpm lint`
+- 整体构建: `pnpm build`
+- 整体 lint / typecheck: `pnpm lint`
 - Backend unit test: `pnpm --filter backend test`
 - Backend e2e test: `pnpm --filter backend test:e2e`
 - Backend federation test: `pnpm --filter backend test:fed`
 - Frontend test: `pnpm --filter frontend test`
-- Migration 差分検査: `pnpm --filter backend check-migrations`
-- `misskey-js` 再生成 (API 変更後必須): `pnpm build-misskey-js-with-types`
+- Migration 差异检查: `pnpm --filter backend check-migrations`
+- 重新生成 `misskey-js`（API 变更后必须）: `pnpm build-misskey-js-with-types`
 
-**注意:** backend テスト (`test` / `test:e2e` / `test:fed`) 実行前に `.config/test.yml` が必要。未作成の場合は `ncp .github/misskey/test.yml .config/test.yml` (または `cp .github/misskey/test.yml .config/test.yml`) を実行してから走らせる。各テストスクリプトが内部で `cross-env NODE_ENV=test pnpm compile-config` を呼ぶため、コピー済みであれば追加の compile-config は不要。
+**注意:** 运行 backend 测试（`test` / `test:e2e` / `test:fed`）前需要 `.config/test.yml`。若未创建，先执行 `ncp .github/misskey/test.yml .config/test.yml`（或 `cp .github/misskey/test.yml .config/test.yml`）再运行。各测试脚本内部会调用 `cross-env NODE_ENV=test pnpm compile-config`，因此只要复制过就无需额外的 compile-config。
 
-変更範囲に応じて最も近いコマンドから優先して検証し、必要なら全体コマンドに広げること。
+按变更范围优先用最贴近的命令验证，必要时再扩大到整体命令。
 
-## Editing hints
+## 编辑提示
 
-- Backend の API / migration / TypeORM 変更は `packages/backend` を見る
-- Frontend の Vue コンポーネントやページ変更は `packages/frontend` を見る
-- `AGENTS.md` 内の相対リンクはリポジトリルート起点で解決する想定
+- Backend 的 API / migration / TypeORM 变更看 `packages/backend`
+- Frontend 的 Vue 组件与页面变更看 `packages/frontend`
+- `AGENTS.md` 内的相对链接以仓库根目录为基准解析
 
-**補足:** `AGENTS.md` はより詳細な正典 (Codex / Claude Code が読み込む)。Copilot code review ではこのファイルが主な入口になる。両方が読まれる環境では `AGENTS.md` を補助情報として使ってよい。
+**补充:** `AGENTS.md` 是更详细的正本（Codex / Claude Code 读取）。Copilot code review 以本文件为主要入口。在两者都会被读取的环境中，可以把 `AGENTS.md` 作为辅助信息使用。

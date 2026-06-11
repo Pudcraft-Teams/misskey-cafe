@@ -1,103 +1,103 @@
-# i18n キーを追加・改修する
+# 新增 / 修改 i18n 键
 
-UI 文言の追加・変更を行う際の手順。**手動編集して良いのは `locales/ja-JP.yml` のみ**。
+新增、变更 UI 文案时的步骤。**唯一可以手动编辑的是 `locales/ja-JP.yml`**。
 
-## 大前提 (絶対 NG)
+## 大前提 (绝对禁止)
 
-- **`locales/<lang>.yml` (ja-JP.yml 以外) の編集は禁止**。これらは Crowdin の自動配信先で、手動編集すると次の同期で上書き喪失する ([locales/README.md](../../../../../locales/README.md), [crowdin.yml](../../../../../crowdin.yml))
-- 文字列リテラルを SFC に直書きしない (`<span>こんにちは</span>` 等)。必ず `i18n.ts.<key>` を経由する
-- 既存キーの破壊的リネームは Crowdin 翻訳資産を失わせる。**追加 → 移行 → 旧キー削除** の 3 段階に分割する。詳細手順と誤編集の復旧は [knowledge/i18n-usage.md §Crowdin 安全策](../knowledge/i18n-usage.md)
+- **禁止编辑 `locales/<lang>.yml` (ja-JP.yml 以外)**。它们是 Crowdin 的自动分发目标,手动编辑会在下一次同步时被覆盖丢失 ([locales/README.md](../../../../../locales/README.md), [crowdin.yml](../../../../../crowdin.yml))
+- 不要把字符串字面量直写进 SFC (如 `<span>こんにちは</span>`)。必须经由 `i18n.ts.<key>`
+- 既有键的破坏性重命名会丢失 Crowdin 翻译资产。要拆成 **新增 → 迁移 → 删除旧键** 三个阶段。详细步骤与误编辑的恢复见 [knowledge/i18n-usage.md §Crowdin 安全策](../knowledge/i18n-usage.md)
 
-## ステップ 1: ja-JP.yml にキーを追加
+## 步骤 1: 向 ja-JP.yml 添加键
 
-[locales/ja-JP.yml](../../../../../locales/ja-JP.yml) を編集する。YAML の階層構造を維持し、関連するセクションに配置する:
+编辑 [locales/ja-JP.yml](../../../../../locales/ja-JP.yml)。保持 YAML 的层级结构,放到相关的 section 中:
 
 ```yaml
-# トップレベル単純キー
+# 顶层简单键
 save: "保存"
 
-# ネストしたカテゴリ (アンダースコア接頭辞は内部カテゴリ)
+# 嵌套分类 (下划线前缀表示内部分类)
 _settings:
   general: "全般"
   appearance: "外観"
 
-# パラメータ付き (単純なプレースホルダ置換)
-# 受け付けるのは {name} 形式のみ。ICU MessageFormat (plural/select) は非対応
+# 带参数 (简单的占位符替换)
+# 只接受 {name} 形式。不支持 ICU MessageFormat (plural/select)
 greeting: "こんにちは、{name}さん"
 ```
 
-### 命名のお作法
+### 命名规范
 
-- 単純キー: lowerCamelCase (例: `saveChanges`, `confirmDelete`)
-- カテゴリ: アンダースコア接頭辞 (例: `_settings`, `_abuseUserReport`)
-- 既存セクション内に追加する場合は **周辺の既存配置・意味グループに合わせる** (例えば `_settings` は機能ブロック順に並んでおりアルファベット順ではない)。新セクション全体を末尾に追加するのは可
-- **HTML タグ (`<b>` `<br>` `<strong>` 等) や `:` `'` `&` を含む値は必ずダブルクォートで囲む** (未クォートだと YAML パース失敗)
+- 简单键: lowerCamelCase (例: `saveChanges`, `confirmDelete`)
+- 分类: 下划线前缀 (例: `_settings`, `_abuseUserReport`)
+- 在既有 section 内追加时,要 **对齐周围既有的排布与语义分组** (例如 `_settings` 是按功能块顺序排列,而非按字母顺序)。整个新 section 追加到末尾是可以的
+- **含 HTML 标签 (`<b>` `<br>` `<strong>` 等) 或 `:` `'` `&` 的值必须用双引号包起来** (不加引号会导致 YAML 解析失败)
 
-**詳細:** ICU 非対応の代替戦略・予約キー `_lang_`・Storybook での挙動は → [knowledge/i18n-usage.md §制約と補足](../knowledge/i18n-usage.md)
+**详见:** ICU 不支持时的替代策略、保留键 `_lang_`、Storybook 中的行为 → [knowledge/i18n-usage.md §约束与补充](../knowledge/i18n-usage.md)
 
-## ステップ 2: 型定義の自動再生成
+## 步骤 2: 类型定义的自动重新生成
 
-`packages/i18n/build.ts` が `ja-JP.yml` を解析し、TypeScript インターフェースを [packages/i18n/src/autogen/locale.ts](../../../../../packages/i18n/src/autogen/locale.ts) に出力する。
+`packages/i18n/build.ts` 会解析 `ja-JP.yml`,把 TypeScript 接口输出到 [packages/i18n/src/autogen/locale.ts](../../../../../packages/i18n/src/autogen/locale.ts)。
 
-### 自動 (推奨)
+### 自动 (推荐)
 
-`pnpm dev` 実行中なら、`packages/i18n` の watch スクリプト (`nodemon ... tsx ./build.ts --watch`) が yml の変更を検知して自動再生成する。
+如果 `pnpm dev` 正在运行,`packages/i18n` 的 watch 脚本 (`nodemon ... tsx ./build.ts --watch`) 会检测到 yml 变更并自动重新生成。
 
-### 手動
+### 手动
 
 ```bash
 pnpm --filter i18n generate
 ```
 
-実体は `tsx scripts/generateLocaleInterface.ts`。
+实体是 `tsx scripts/generateLocaleInterface.ts`。
 
-### 失敗パターン
+### 失败模式
 
-これを実行せずに frontend 側で `i18n.ts.<newKey>` を参照すると、`Locale` インターフェースに追加されていないため typecheck で `Property '<newKey>' does not exist on type 'Locale'` というエラーになる (`pnpm --filter frontend lint` で発覚)。型エラー・実行時警告 (`Unexpected locale key`, `Missing locale parameters`) と対処は → [knowledge/i18n-usage.md §トラブルシュート](../knowledge/i18n-usage.md)。
+如果不执行它就在 frontend 一侧引用 `i18n.ts.<newKey>`,由于它尚未加入 `Locale` 接口,typecheck 会报 `Property '<newKey>' does not exist on type 'Locale'` (会被 `pnpm --filter frontend lint` 发现)。类型错误、运行时警告 (`Unexpected locale key`, `Missing locale parameters`) 及处理方式 → [knowledge/i18n-usage.md §排错](../knowledge/i18n-usage.md)。
 
-## ステップ 3: frontend での参照
+## 步骤 3: 在 frontend 中引用
 
 ```ts
 import { i18n } from '@/i18n.js';
 ```
 
-| 用途 | 書き方 |
+| 用途 | 写法 |
 |---|---|
-| 単純文字列 | `i18n.ts.save` |
-| ネスト | `i18n.ts._settings.general` |
-| パラメータ付き | `i18n.tsx.greeting({ name: userName })` |
-| Vue テンプレート内 | `{{ i18n.ts.save }}` / `{{ i18n.tsx.greeting({ name }) }}` |
+| 简单字符串 | `i18n.ts.save` |
+| 嵌套 | `i18n.ts._settings.general` |
+| 带参数 | `i18n.tsx.greeting({ name: userName })` |
+| Vue 模板内 | `{{ i18n.ts.save }}` / `{{ i18n.tsx.greeting({ name }) }}` |
 
-`i18n.ts` は型付き文字列、`i18n.tsx` は `{name}` プレースホルダを埋め込む関数 (パラメータ付きキーのみ存在。ICU MessageFormat ではなく単純な文字列置換)。
+`i18n.ts` 是带类型的字符串,`i18n.tsx` 是嵌入 `{name}` 占位符的函数 (只对带参数的键存在。不是 ICU MessageFormat,而是简单的字符串替换)。
 
-**詳細:** HTML タグ埋め込み・computed によるリアクティブ参照・動的キー切替・ブラケット記法 (`i18n.ts['2fa']`) などの実装パターンは → [knowledge/i18n-usage.md §実装パターン](../knowledge/i18n-usage.md)
+**详见:** HTML 标签内嵌、用 computed 做响应式引用、动态键切换、方括号记法 (`i18n.ts['2fa']`) 等实现模式 → [knowledge/i18n-usage.md §实现模式](../knowledge/i18n-usage.md)
 
-## ステップ 4: 検証
+## 步骤 4: 验证
 
 ```bash
-# i18n の型再生成 → typecheck + eslint (lint は generate を呼ばないので順番が必須)
+# 重新生成 i18n 类型 → typecheck + eslint (lint 不会调用 generate,所以顺序是必须的)
 pnpm --filter i18n generate
 pnpm --filter i18n lint
 
-# frontend で新キー参照箇所の型チェック
+# 在 frontend 对新键引用处做类型检查
 pnpm --filter frontend lint
 
-# 他言語 yml に diff が出ていないことを確認 (出力が空であれば OK)
+# 确认其他语言 yml 没有产生 diff (输出为空即 OK)
 git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'
 ```
 
-**注意:** `grep -v 'ja-JP.yml'` を **diff 本文** に当てると ja-JP.yml 単体の変更でも `+追加行` が素通りして必ず非空になる。`--name-only` でファイル名だけに絞ってから完全一致で除外するのが正しい。
+**注意:** 把 `grep -v 'ja-JP.yml'` 作用在 **diff 正文** 上时,即便只改了 ja-JP.yml,`+新增行` 也会被放行而必然非空。正确做法是用 `--name-only` 只取文件名后再用完全匹配排除。
 
-ユーザー影響のある UI 変更を伴う場合は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) で CHANGELOG エントリの判定をする。
+如果伴随用户可见的 UI 变更,用 [shipping-misskey-change 技能](../../../shipping-misskey-change/SKILL.md) 判定 CHANGELOG 条目。
 
-## 例: 「ノートを削除しますか？」確認ダイアログを追加する
+## 示例: 添加「要删除这条 note 吗?」确认对话框
 
 1. `locales/ja-JP.yml`:
    ```yaml
    _notes:
      deleteConfirm: "このノートを削除しますか？"
    ```
-2. `pnpm --filter i18n generate` (または `pnpm dev` で watch 中)
+2. `pnpm --filter i18n generate` (或 `pnpm dev` 处于 watch 中)
 3. SFC:
    ```vue
    <script setup lang="ts">
@@ -110,14 +110,14 @@ git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'
        text: i18n.ts._notes.deleteConfirm,
      });
      if (canceled) return;
-     // 削除処理
+     // 删除处理
    }
    </script>
    ```
 
-## 参照ファイル
+## 参考文件
 
-- [locales/README.md (★ 編集ポリシー根拠)](../../../../../locales/README.md)
+- [locales/README.md (★ 编辑策略依据)](../../../../../locales/README.md)
 - [locales/ja-JP.yml](../../../../../locales/ja-JP.yml)
 - [packages/i18n/build.ts](../../../../../packages/i18n/build.ts)
 - [packages/i18n/src/autogen/locale.ts (生成物)](../../../../../packages/i18n/src/autogen/locale.ts)

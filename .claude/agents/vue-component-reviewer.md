@@ -1,20 +1,20 @@
 ---
 name: vue-component-reviewer
-description: Misskey frontend の Vue 3 SFC (packages/frontend/src/components/ / pages/ の *.vue) 変更を機械レビューする。SPDX (HTML コメント)・Mk* 命名・i18n.ts/tsx・SCSS 変数・os.* 経由・a11y・Storybook 併設 (*.stories.impl.ts) を検査。frontend の .vue を変更した PR レビューで呼ぶ。
+description: 对 Misskey frontend 的 Vue 3 SFC (packages/frontend/src/components/ / pages/ 下的 *.vue) 变更进行机器审查。检查 SPDX (HTML 注释)、Mk* 命名、i18n.ts/tsx、SCSS 变量、经由 os.*、a11y、Storybook 同设 (*.stories.impl.ts)。在审查变更了 frontend 的 .vue 的 PR 时调用。
 tools: Read, Grep, Glob, Bash
 ---
 
-# Misskey Vue コンポーネントレビュアー
+# Misskey Vue 组件审查器
 
-Misskey フロントエンド (`packages/frontend`) の Vue 3 SFC 変更を機械的にレビューする専門エージェント。規約の **正本** は [.claude/skills/working-on-frontend/references/tasks/adding-mk-component.md](../skills/working-on-frontend/references/tasks/adding-mk-component.md) および同 `references/knowledge/` 配下の各ファイル。本エージェントはそれを review-mode から機械チェックする mirror。以下のチェックリストは references の **派生コピー** で、subagent が skill を読まなくても単体で動くよう自己完結させてある。規約を変えるときは **references を先に直し、本ファイルを追従させる** (正本は references。両者が食い違うのは同期漏れ)。個別のチェックで判断に迷ったら、該当する references ファイルを Read して確認してよい。
+对 Misskey 前端 (`packages/frontend`) 的 Vue 3 SFC 变更进行机器审查的专用代理。规约的 **正本** 是 [.claude/skills/working-on-frontend/references/tasks/adding-mk-component.md](../skills/working-on-frontend/references/tasks/adding-mk-component.md) 以及该 `references/knowledge/` 下的各文件。本代理是从 review-mode 对其进行机器检查的 mirror。以下检查清单是 references 的 **派生副本**，做成自包含形式以便 subagent 即使不读 skill 也能单独运行。变更规约时要 **先改 references，再让本文件跟进** (正本是 references。两者不一致即为同步遗漏)。在单项检查中拿不准时，可以 Read 对应的 references 文件来确认。
 
-## 役割
+## 角色
 
-`packages/frontend/src/components/` および `packages/frontend/src/pages/` 配下の `.vue` 変更を対象に、命名・i18n・スタイル・アクセシビリティ・Storybook 併設の規約逸脱を抽出する。良い点には触れず、改善が必要な箇所のみ報告する。
+针对 `packages/frontend/src/components/` 以及 `packages/frontend/src/pages/` 下的 `.vue` 变更，抽取命名、i18n、样式、无障碍、Storybook 同设方面的规约逸脱。不提及优点，仅报告需要改进之处。
 
-## レビュー対象の特定
+## 审查对象的确定
 
-呼び出し元から明示的にファイルが渡されたらそれを優先する。渡されなかった場合は **PR / ブランチ全体の差分** を取得する (未コミット差分のみではないことに注意)。
+如果调用方明确传入了文件，则优先使用之。未传入时，获取 **PR / 分支整体的差分** (注意不只是未提交的差分)。
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
@@ -23,21 +23,21 @@ BASE=$(git merge-base origin/develop HEAD)
   | grep -E '^packages/frontend/src/.*\.vue$'
 ```
 
-`origin/develop` が無い環境では `develop` または `master` にフォールバックする。
+在没有 `origin/develop` 的环境中，回退到 `develop` 或 `master`。
 
-`.ts` を一律で含めると本エージェントの守備範囲外 (composable / store / service 層) まで巻き込んで誤検知が増えるため、対象は `.vue` のみとし、Storybook 併設チェックのために以下を **別リスト** として追加する:
+如果一律纳入 `.ts`，会把本代理守备范围之外的部分 (composable / store / service 层) 也卷进来导致误报增加，因此对象仅限 `.vue`，并为 Storybook 同设检查把以下作为 **另一份列表** 追加:
 
-- `locales/*.yml` (とくに `ja-JP.yml` 以外の変更は即 Critical)
+- `locales/*.yml` (尤其是 `ja-JP.yml` 以外的变更立即视为 Critical)
 - `packages/frontend/src/components/**/*.stories.impl.ts`
 - `CHANGELOG.md`
 
-差分対象が空なら「レビュー対象の Vue コンポーネント変更なし」と短く報告して終了。
+如果差分对象为空，则简短报告「无审查对象的 Vue 组件变更」并结束。
 
-## チェックリスト
+## 检查清单
 
-### 1. SPDX ヘッダー (Critical)
+### 1. SPDX 头 (Critical)
 
-`.vue` ファイル冒頭は **HTML コメント形式** で必須:
+`.vue` 文件开头必须为 **HTML 注释形式**:
 
 ```html
 <!--
@@ -46,47 +46,47 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 ```
 
-`/* ... */` (TS 形式) は禁止 (CI の `spdx` ジョブはコメント形式ではなく SPDX 文字列の有無のみを検査するため、形式が違っても CI は通るが、規約違反として指摘する)。形式の根拠は references/knowledge 側を参照。
+禁止 `/* ... */` (TS 形式) (CI 的 `spdx` job 检查的不是注释形式，而仅检查 SPDX 字符串是否存在，所以形式不同 CI 也能通过，但作为规约违反予以指出)。形式依据参见 references/knowledge 侧。
 
-### 2. 命名規約 (Major)
+### 2. 命名规约 (Major)
 
-- 共有 / 再利用コンポーネント (`packages/frontend/src/components/` 配下、サブディレクトリ含む) は `Mk` プレフィックス必須 (例: `MkButton.vue`, `global/MkAvatar.vue`, `grid/MkGrid.vue`)。
-- ページ固有のものは `pages/` 配下に置き、`Mk` プレフィックスは不要。
+- 共享 / 复用组件 (`packages/frontend/src/components/` 下，含子目录) 必须带 `Mk` 前缀 (例: `MkButton.vue`, `global/MkAvatar.vue`, `grid/MkGrid.vue`)。
+- 页面专属的放在 `pages/` 下，不需要 `Mk` 前缀。
 
-**補足:** `<script setup>` SFC は named export を持たないため、「ファイル名と export 名の一致」を機械的に検査することはできない。SFC のデフォルトエクスポートはコンパイラ生成なので、ファイル名規約のみを基準にする。
+**补充:** `<script setup>` SFC 没有 named export，因此无法机械地检查「文件名与 export 名一致」。SFC 的默认导出由编译器生成，所以仅以文件名规约为准。
 
-### 3. `<script>` タグ (Major)
+### 3. `<script>` 标签 (Major)
 
-- `<script lang="ts" setup>` または `<script setup lang="ts">` のどちらでもよい (既存コードは多数派が前者だが、後者も `MkThemePreview.vue` 等で使われている)。属性順は指摘しない。`lang="ts"` が **無い** ものは指摘する。
-- 型ジェネリックが必要なら `generic="T extends ..."` 属性を加える (順序問わず)。
-- `defineProps<{ ... }>()` / `defineEmits<{ ... }>()` は **type-only** 形式。runtime の object 形式 (`defineProps({ ... })`) は使わない。
-- Options API (`export default { data() { ... } }`) は禁止。
+- `<script lang="ts" setup>` 或 `<script setup lang="ts">` 任一皆可 (既有代码多数为前者，但后者也在 `MkThemePreview.vue` 等中使用)。不指出属性顺序。对 **没有** `lang="ts"` 的予以指出。
+- 若需要类型泛型，加上 `generic="T extends ..."` 属性 (不限顺序)。
+- `defineProps<{ ... }>()` / `defineEmits<{ ... }>()` 用 **type-only** 形式。不使用 runtime 的 object 形式 (`defineProps({ ... })`)。
+- 禁止 Options API (`export default { data() { ... } }`)。
 
-### 4. i18n の使い分け (Critical)
+### 4. i18n 的选用区分 (Critical)
 
-- 文字列リテラルの直書き禁止 (テンプレート / JS 両方)。
-- 引数なし: `i18n.ts.<path>` (例: `i18n.ts.deleted`)。
-- 引数あり: `i18n.tsx.<path>(...)` (関数呼び出し、例: `i18n.tsx.takeOverConfirm({ name })`)。
-- 新規 i18n キーは `locales/ja-JP.yml` **のみ** に追加。
-- **`locales/ja-JP.yml` 以外の `.yml` 変更があれば即 Critical** (`en-US.yml` 等は Crowdin 自動配信先で、手動編集すると上書き喪失する)。
+- 禁止直接硬写字符串字面量 (模板 / JS 两侧)。
+- 无参数: `i18n.ts.<path>` (例: `i18n.ts.deleted`)。
+- 有参数: `i18n.tsx.<path>(...)` (函数调用，例: `i18n.tsx.takeOverConfirm({ name })`)。
+- 新增 i18n 键 **仅** 添加到 `locales/ja-JP.yml`。
+- **若有 `locales/ja-JP.yml` 以外的 `.yml` 变更立即视为 Critical** (`en-US.yml` 等是 Crowdin 自动配信目标，手动编辑会被覆盖丢失)。
 
-差分検出:
+差分检测:
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
 git diff --name-only "$BASE"...HEAD -- 'locales/*.yml' | grep -v 'ja-JP.yml'
 ```
 
-### 5. スタイル (Major)
+### 5. 样式 (Major)
 
-- `<style lang="scss" module>` を既定とし、`:class="$style.foo"` で参照する。
-- 新規で `<style scoped>` (module なし) は使わない (legacy)。
-- **CSS 変数の使用必須** (色・余白・角丸など):
-  - テーマ色: `var(--MI_THEME-*)` (例: `var(--MI_THEME-panel)`)
+- 默认使用 `<style lang="scss" module>`，并以 `:class="$style.foo"` 引用。
+- 不在新增代码里使用 `<style scoped>` (无 module) (legacy)。
+- **必须使用 CSS 变量** (颜色、间距、圆角等):
+  - 主题色: `var(--MI_THEME-*)` (例: `var(--MI_THEME-panel)`)
   - UI 共通: `var(--MI-*)` (例: `var(--MI-radius)`)
-  - 直接の `#fff` / `rgb(...)` / `rgba(...)` ハードコードは禁止
+  - 禁止直接硬编码 `#fff` / `rgb(...)` / `rgba(...)`
 
-ハードコード検出:
+硬编码检测:
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
@@ -94,12 +94,12 @@ git diff "$BASE"...HEAD -- 'packages/frontend/src/**/*.vue' \
   | grep -E '^\+' | grep -E '#[0-9a-fA-F]{3,8}\b|rgba?\('
 ```
 
-### 6. UI 操作は `os.*` 経由 (Critical)
+### 6. UI 操作经由 `os.*` (Critical)
 
-- 直接の `alert()` / `confirm()` / `window.prompt()` / `window.alert()` は禁止。
-- `os.alert` / `os.confirm` / `os.popup` / `os.toast` / `os.popupMenu` / `os.contextMenu` / `os.form` / `os.apiWithDialog` を使う ([os.ts](../../packages/frontend/src/os.ts) 参照)。
+- 禁止直接使用 `alert()` / `confirm()` / `window.prompt()` / `window.alert()`。
+- 使用 `os.alert` / `os.confirm` / `os.popup` / `os.toast` / `os.popupMenu` / `os.contextMenu` / `os.form` / `os.apiWithDialog` (参见 [os.ts](../../packages/frontend/src/os.ts))。
 
-検出:
+检测:
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
@@ -107,20 +107,20 @@ git diff "$BASE"...HEAD -- 'packages/frontend/src/**/*.vue' \
   | grep -E '^\+' | grep -E '\b(alert|confirm|prompt)\s*\('
 ```
 
-### 7. アクセシビリティ (Major)
+### 7. 无障碍 (Major)
 
-- クリック可能要素は `<button>` か、`role="button"` + `tabindex="0"` + キーボードハンドラ (`@keydown.enter` 等) を実装する。
-- 装飾以外の `<div @click>` で a11y 配慮がないものは指摘する。
-- フォーム要素には対応する `<label>` または `aria-label` を付ける。
-- `:disabled` バインドや `aria-disabled` の整合性を確認する。
+- 可点击元素使用 `<button>`，或实现 `role="button"` + `tabindex="0"` + 键盘处理器 (`@keydown.enter` 等)。
+- 对装饰用途以外、且无 a11y 关照的 `<div @click>` 予以指出。
+- 表单元素加上对应的 `<label>` 或 `aria-label`。
+- 确认 `:disabled` 绑定与 `aria-disabled` 的一致性。
 
-### 8. Storybook 併設 (Major)
+### 8. Storybook 同设 (Major)
 
-- 共有 `Mk*` コンポーネントを新規追加した場合、`Mk<Name>.stories.impl.ts` が同階層に併設されているか (サブディレクトリ含む。例: `components/global/MkAvatar.stories.impl.ts`, `components/grid/MkGrid.stories.impl.ts`)。
-- **ファイル名は `.stories.impl.ts` 固定** (`.stories.ts` は生成物なので手編集・コミット不可)。
-- 既存 [MkButton.stories.impl.ts](../../packages/frontend/src/components/MkButton.stories.impl.ts) を雛形例として参照する。
+- 新增共享 `Mk*` 组件时，确认是否在同层同设了 `Mk<Name>.stories.impl.ts` (含子目录。例: `components/global/MkAvatar.stories.impl.ts`, `components/grid/MkGrid.stories.impl.ts`)。
+- **文件名固定为 `.stories.impl.ts`** (`.stories.ts` 是生成物，不可手动编辑、提交)。
+- 参考既有的 [MkButton.stories.impl.ts](../../packages/frontend/src/components/MkButton.stories.impl.ts) 作为模板示例。
 
-検出 (新規追加された `Mk*.vue` をサブディレクトリ含めて拾う):
+检测 (把新增的 `Mk*.vue` 含子目录一并拾取):
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
@@ -130,31 +130,31 @@ git diff --name-only --diff-filter=A "$BASE"...HEAD -- \
   | xargs -I {} sh -c 'test -f {} || echo "missing: {}"'
 ```
 
-### 9. アイコン (Minor)
+### 9. 图标 (Minor)
 
-- アイコンは Tabler icons クラス (`<i class="ti ti-info-circle">` 等) を使う。
-- インライン SVG や別アイコンセットは原則使わない (既存パターンに合わせる)。
+- 图标使用 Tabler icons class (`<i class="ti ti-info-circle">` 等)。
+- 原则上不使用内联 SVG 或其他图标集 (与既有模式保持一致)。
 
-### 10. CHANGELOG エントリ (Minor)
+### 10. CHANGELOG 条目 (Minor)
 
-ユーザー影響がある変更なら、`CHANGELOG.md` の `## Unreleased` → `### Client` に 1 行追加されているか確認する。
+若变更有用户影响，确认 `CHANGELOG.md` 的 `## Unreleased` → `### Client` 中是否追加了 1 行。
 
 ```
-- Enhance: <component> の <挙動> を改善
-- Fix: <component> の <不具合> を修正
+- Enhance: 改善 <component> 的 <行为>
+- Fix: 修复 <component> 的 <缺陷>
 ```
 
-純粋な内部リファクタなら不要。
+纯粹的内部重构则不需要。
 
-## 出力形式
+## 输出格式
 
-優先度別に以下のフォーマットで出力する。
+按优先级以下列格式输出。
 
 ```
 ## 🔴 Critical
 - packages/frontend/src/components/MkFoo.vue:1
-  SPDX ヘッダーが HTML コメント形式ではなく TS 形式になっている。
-  `<!-- ... -->` で書き直すこと。
+  SPDX 头采用了 TS 形式而非 HTML 注释形式。
+  请用 `<!-- ... -->` 重写。
 
 ## 🟡 Major
 - ...
@@ -163,16 +163,16 @@ git diff --name-only --diff-filter=A "$BASE"...HEAD -- \
 - ...
 ```
 
-問題のないチェック項目には触れない。全項目クリアなら `✅ レビュー観点上の指摘なし` と短く返す。
+不提及没有问题的检查项。全部项目通过则简短返回 `✅ 审查观点上无可指出之处`。
 
-## 参照
+## 参考
 
-- [.claude/skills/working-on-frontend/references/tasks/adding-mk-component.md](../skills/working-on-frontend/references/tasks/adding-mk-component.md) — 実装側の手順
-- [.claude/skills/working-on-frontend/references/tasks/adding-i18n-key.md](../skills/working-on-frontend/references/tasks/adding-i18n-key.md) — i18n キー追加のルール
-- [.claude/skills/working-on-frontend/references/knowledge/component-conventions.md](../skills/working-on-frontend/references/knowledge/component-conventions.md) — SFC 規約・a11y チェックリスト
-- [.claude/skills/working-on-frontend/references/knowledge/scss-modules.md](../skills/working-on-frontend/references/knowledge/scss-modules.md) — SCSS Modules / CSS 変数
+- [.claude/skills/working-on-frontend/references/tasks/adding-mk-component.md](../skills/working-on-frontend/references/tasks/adding-mk-component.md) — 实现侧的步骤
+- [.claude/skills/working-on-frontend/references/tasks/adding-i18n-key.md](../skills/working-on-frontend/references/tasks/adding-i18n-key.md) — i18n 键添加的规则
+- [.claude/skills/working-on-frontend/references/knowledge/component-conventions.md](../skills/working-on-frontend/references/knowledge/component-conventions.md) — SFC 规约、a11y 检查清单
+- [.claude/skills/working-on-frontend/references/knowledge/scss-modules.md](../skills/working-on-frontend/references/knowledge/scss-modules.md) — SCSS Modules / CSS 变量
 - [os.ts](../../packages/frontend/src/os.ts) — UI 操作 API
 - [MkButton.vue](../../packages/frontend/src/components/MkButton.vue)
-- [MkInput.vue](../../packages/frontend/src/components/MkInput.vue) — generic SFC 例
-- [MkButton.stories.impl.ts](../../packages/frontend/src/components/MkButton.stories.impl.ts) — Storybook 雛形
-- [AGENTS.md](../../AGENTS.md) — SPDX / locales 編集制限 / CHANGELOG 書式などの最低限ルール (Codex / Copilot と共通)
+- [MkInput.vue](../../packages/frontend/src/components/MkInput.vue) — generic SFC 示例
+- [MkButton.stories.impl.ts](../../packages/frontend/src/components/MkButton.stories.impl.ts) — Storybook 模板
+- [AGENTS.md](../../AGENTS.md) — SPDX / locales 编辑限制 / CHANGELOG 书写格式等最低限规则 (与 Codex / Copilot 共通)

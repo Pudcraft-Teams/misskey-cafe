@@ -1,5 +1,5 @@
 ---
-description: Misskey の lint / typecheck / 高速テストを順に実行して品質ゲートを通すコマンド。完了前の軽量検証用。
+description: 依次执行 Misskey 的 lint / typecheck / 快速测试以通过质量关卡的命令。用于完成前的轻量验证。
 argument-hint: "[repo|backend|frontend|<path/to/file.ts>]"
 ---
 
@@ -7,74 +7,74 @@ argument-hint: "[repo|backend|frontend|<path/to/file.ts>]"
 SPDX-License-Identifier: MIT
 SPDX-FileCopyrightText: 2026 Affaan Mustafa and everything-claude-code contributors
 
-出典 (upstream): https://github.com/affaan-m/everything-claude-code (v2.0.0-rc.1)
+出处 (upstream): https://github.com/affaan-m/everything-claude-code (v2.0.0-rc.1)
 upstream path: commands/quality-gate.md
 upstream license: MIT — https://github.com/affaan-m/everything-claude-code/blob/main/LICENSE
-project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内サードパーティ一覧 + MIT 全文)
+project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内第三方一览 + MIT 全文)
 
-Imported into Misskey .claude/ on 2026-05-10. Pipeline 概念 (lint → typecheck → test) は upstream ECC 版から借用 (MIT)。実コマンド層は Misskey の pnpm + tsgo + ESLint + Vitest に固定し、formatter (Prettier/Biome) フェーズは削除した。
+Imported into Misskey .claude/ on 2026-05-10. Pipeline 概念 (lint → typecheck → test) 借用自 upstream ECC 版 (MIT)。实际命令层固定为 Misskey 的 pnpm + tsgo + ESLint + Vitest，删除了 formatter (Prettier/Biome) 阶段。
 
-note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsgo + ESLint + Vitest の組み合わせに固定。重い test:e2e / test:fed は含まない (CI 側で実行される)。
+note: 原 ECC 版是语言自动判定 + format/lint/type 的通用版，但 Misskey 专用版固定为 pnpm + tsgo + ESLint + Vitest 的组合。不包含较重的 test:e2e / test:fed (在 CI 侧执行)。
 -->
 
-# /quality-gate — Misskey 軽量品質ゲート
+# /quality-gate — Misskey 轻量质量关卡
 
 `/quality-gate [scope]`
 
-完了前の **軽量** 品質チェック。重い E2E / 連合テスト (test:e2e / test:fed / Cypress) は CI 側で実行されるため、本コマンドには含めない。
+完成前的 **轻量** 质量检查。较重的 E2E / 联合测试 (test:e2e / test:fed / Cypress) 在 CI 侧执行，因此本命令不包含。
 
 ## Scope
 
-- `repo` (default) — 全パッケージ
-- `backend` — `packages/backend` のみ
-- `frontend` — `packages/frontend` のみ
-- `path/to/file.ts` — 単一ファイルへの ESLint --fix のみ
+- `repo` (default) — 全部包
+- `backend` — 仅 `packages/backend`
+- `frontend` — 仅 `packages/frontend`
+- `path/to/file.ts` — 仅对单个文件执行 ESLint --fix
 
 ## Pipeline
 
 ### Repo scope (全部)
 
-各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json)) で、ルートの `pnpm lint` は `pnpm --no-bail -r lint` (= 全パッケージで lint を `--no-bail` で実行)。**typecheck は lint に含まれている**ため、通常はこの 2 コマンドで十分:
+各包的 `lint` 脚本实体是 `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json))，而根目录的 `pnpm lint` 是 `pnpm --no-bail -r lint` (= 在全部包上以 `--no-bail` 执行 lint)。**typecheck 已包含在 lint 中**，所以通常这 2 条命令就足够:
 
 ```bash
-# 1. Lint (= typecheck + ESLint、全パッケージ。--no-bail で最初の失敗で止まらず全結果を集める)
+# 1. Lint (= typecheck + ESLint，全部包。用 --no-bail 在首次失败时不停止并收集全部结果)
 pnpm lint
 
-# 2. Unit test (高速、e2e は含まない)
+# 2. Unit test (快速，不含 e2e)
 pnpm --filter backend test
 pnpm --filter frontend test
 ```
 
-#### 詳細を分けて見たい時のみ (optional)
+#### 仅在想分别查看细节时 (optional)
 
-lint がまとめて失敗していて typecheck の結果だけ単独で見たい場合は、以下を個別に回す。**通常は不要** (lint の出力を読めば足りる):
+当 lint 一并失败而只想单独查看 typecheck 的结果时，单独运行以下命令。**通常不需要** (读 lint 的输出即可):
 
 ```bash
-pnpm --filter backend typecheck    # tsgo 単体
-pnpm --filter frontend typecheck   # vue-tsc 単体 (Vue SFC の型を見るため)
+pnpm --filter backend typecheck    # tsgo 单独
+pnpm --filter frontend typecheck   # vue-tsc 单独 (为查看 Vue SFC 的类型)
 ```
 
 ### Backend scope
 
-`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。軽量ゲートでは typecheck の二重実行を避けるため `lint` + `test` のみ:
+`pnpm --filter backend lint` 内部会执行 `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json))，所以跑 `lint` 时 typecheck 也会一并完成。在轻量关卡中为避免 typecheck 的重复执行，仅用 `lint` + `test`:
 
 ```bash
 pnpm --filter backend lint
 pnpm --filter backend test
 ```
 
-`tsgo` の出力を単独で見たい時のみ optional で `pnpm --filter backend typecheck` を別途回す。
+仅在想单独查看 `tsgo` 的输出时，作为 optional 另行运行 `pnpm --filter backend typecheck`。
 
 ### Frontend scope
 
-`pnpm --filter frontend lint` も内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/frontend/package.json](../../packages/frontend/package.json)) ため、軽量ゲートでは Backend 同様に `lint` + `test` のみ:
+`pnpm --filter frontend lint` 内部同样会执行 `pnpm typecheck && pnpm eslint` ([packages/frontend/package.json](../../packages/frontend/package.json))，因此在轻量关卡中与 Backend 同样仅用 `lint` + `test`:
 
 ```bash
 pnpm --filter frontend lint
 pnpm --filter frontend test
 ```
 
-`vue-tsc` の出力を単独で見たい時のみ optional で `pnpm --filter frontend typecheck` を別途回す。
+仅在想单独查看 `vue-tsc` 的输出时，作为 optional 另行运行 `pnpm --filter frontend typecheck`。
 
 ### Single file scope
 
@@ -84,7 +84,7 @@ pnpm exec eslint --fix <path>
 
 ## Output
 
-実行したフェーズの pass/fail と件数を集計する。標準パイプラインは `pnpm lint` (typecheck 内包) と unit test のみなので、デフォルトの出力は以下のようになる:
+汇总所执行阶段的 pass/fail 和件数。标准 pipeline 仅有 `pnpm lint` (内含 typecheck) 和 unit test，因此默认输出如下:
 
 ```text
 Quality Gate (repo):
@@ -93,31 +93,31 @@ Lint:        PASS  (0 errors, 2 warnings)
 Backend ut:  PASS  (412/412)
 Frontend ut: PASS  (87/87)
 
-→ 完了前の軽量チェック OK。重い e2e / 連合テストは CI 側で実行される。
+→ 完成前的轻量检查 OK。较重的 e2e / 联合测试在 CI 侧执行。
 ```
 
-`#### 詳細を分けて見たい時のみ (optional)` で個別 typecheck (`pnpm --filter backend typecheck` / `pnpm --filter frontend typecheck`) も回した場合のみ、その結果を追加行として表示する:
+仅当用 `#### 仅在想分别查看细节时 (optional)` 也跑了单独 typecheck (`pnpm --filter backend typecheck` / `pnpm --filter frontend typecheck`) 时，才把其结果作为追加行显示:
 
 ```text
 Quality Gate (repo):
 
 Lint:        PASS  (0 errors, 2 warnings)
-Backend tc:  PASS  (0 errors)        # optional 実行時のみ
-Frontend tc: PASS  (0 errors)        # optional 実行時のみ
+Backend tc:  PASS  (0 errors)        # 仅 optional 执行时
+Frontend tc: PASS  (0 errors)        # 仅 optional 执行时
 Backend ut:  PASS  (412/412)
 Frontend ut: PASS  (87/87)
 ```
 
-失敗時は最初に落ちたフェーズで停止して詳細を見せる。
+失败时在首个失败的阶段停止并展示详情。
 
-## 関連 skill / コマンド
+## 相关 skill / 命令
 
-- [`shipping-misskey-change` スキル](../skills/shipping-misskey-change/SKILL.md) — commit / PR 直前の最終チェックリスト (misskey-js 再生成 / SPDX / CHANGELOG 等)
-- [`shipping-misskey-change/references/tasks/regenerate-misskey-js.md`](../skills/shipping-misskey-change/references/tasks/regenerate-misskey-js.md) — API 変更時の `pnpm build-misskey-js-with-types` 実行手順
-- [.github/copilot-instructions.md §Validation コマンド](../../.github/copilot-instructions.md) — pnpm コマンド一覧 (Copilot / Codex 向けに再掲)
+- [`shipping-misskey-change` 技能](../skills/shipping-misskey-change/SKILL.md) — commit / PR 前的最终检查清单 (misskey-js 重新生成 / SPDX / CHANGELOG 等)
+- [`shipping-misskey-change/references/tasks/regenerate-misskey-js.md`](../skills/shipping-misskey-change/references/tasks/regenerate-misskey-js.md) — API 变更时的 `pnpm build-misskey-js-with-types` 执行步骤
+- [.github/copilot-instructions.md §Validation 命令](../../.github/copilot-instructions.md) — pnpm 命令一览 (面向 Copilot / Codex 再录)
 
-## 元 ECC 版との差分
+## 与原 ECC 版的差分
 
-- ジェネリックな言語自動判定を排除し、Misskey 固定 pipeline に。
-- formatter フェーズなし (Misskey は ESLint --fix のみ採用)。
-- e2e / federation / Cypress は重いため除外し CI 側に委譲。
+- 排除通用的语言自动判定，改为 Misskey 固定 pipeline。
+- 无 formatter 阶段 (Misskey 仅采用 ESLint --fix)。
+- e2e / federation / Cypress 较重，故排除并委托给 CI 侧。
