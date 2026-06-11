@@ -1,18 +1,18 @@
 # 新增 / 修改 i18n 键
 
-新增、变更 UI 文案时的步骤。**唯一可以手动编辑的是 `locales/ja-JP.yml`**。
+新增、变更 UI 文案时的步骤。**fork 唯一可手动编辑的 locale 文件是 `locales/zh-CN.yml`**(fork 特有键的中文文案;它同时是全语言的最终回退与 i18n 类型生成的并入源)。
 
 ## 大前提 (绝对禁止)
 
-- **禁止编辑 `locales/<lang>.yml` (ja-JP.yml 以外)**。它们是 Crowdin 的自动分发目标,手动编辑会在下一次同步时被覆盖丢失 ([locales/README.md](../../../../../locales/README.md), [crowdin.yml](../../../../../crowdin.yml))
+- **禁止编辑 zh-CN.yml 以外的 `locales/<lang>.yml`**。`ja-JP.yml` 是上游键源,fork 保持与上游零差异不动它;其他语言文件是 Crowdin 的自动分发目标,手动编辑会在下一次同步时被覆盖丢失 ([locales/README.md](../../../../../locales/README.md), [crowdin.yml](../../../../../crowdin.yml))。上游既有键的文案变更不要在 fork 做,去上游/Crowdin
 - 不要把字符串字面量直写进 SFC (如 `<span>こんにちは</span>`)。必须经由 `i18n.ts.<key>`
 - 既有键的破坏性重命名会丢失 Crowdin 翻译资产。要拆成 **新增 → 迁移 → 删除旧键** 三个阶段。详细步骤与误编辑的恢复见 [knowledge/i18n-usage.md §Crowdin 安全策](../knowledge/i18n-usage.md)
 
-## 步骤 1: 向 ja-JP.yml 添加键
+## 步骤 1: 向 zh-CN.yml 添加键
 
-编辑 [locales/ja-JP.yml](../../../../../locales/ja-JP.yml)。保持 YAML 的层级结构,放到相关的 section 中。
+编辑 [locales/zh-CN.yml](../../../../../locales/zh-CN.yml)。保持 YAML 的层级结构,放到相关的 section 中(与 ja-JP.yml 的同位置对齐,便于上游合并时排序稳定)。
 
-**fork 语言规约:** 本 fork 新增键的 **值直接写简体中文**(ja-JP.yml 是全语言的回退基底,中文值会对所有语言设置的用户生效;详见 [AGENTS.md](../../../../../AGENTS.md) 语言规约)。上游既有键的日文值保持原样,不做翻译。下面示例中的日文仅为上游历史写法示意:
+**fork 语言规约:** fork 新增的键 **只写入 zh-CN.yml,值用简体中文,不动 ja-JP.yml**(类型生成会自动并入 zh-CN 独有的键,zh-CN 同时是全语言的最终回退,实现见 `packages/i18n/src/index.ts` 与 `scripts/generateLocaleInterface.ts`;详见 [AGENTS.md](../../../../../AGENTS.md) 语言规约)。fork 键的其他语言翻译由贡献者 PR 提供。下面示例中的日文仅为上游历史写法示意:
 
 ```yaml
 # 顶层简单键
@@ -84,8 +84,8 @@ pnpm --filter i18n lint
 # 在 frontend 对新键引用处做类型检查
 pnpm --filter frontend lint
 
-# 确认其他语言 yml 没有产生 diff (输出为空即 OK)
-git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'
+# 确认 zh-CN.yml 以外的 yml 没有产生 diff (输出为空即 OK; ja-JP.yml 也必须零差异)
+git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/zh-CN\.yml$'
 ```
 
 **注意:** 把 `grep -v 'ja-JP.yml'` 作用在 **diff 正文** 上时,即便只改了 ja-JP.yml,`+新增行` 也会被放行而必然非空。正确做法是用 `--name-only` 只取文件名后再用完全匹配排除。

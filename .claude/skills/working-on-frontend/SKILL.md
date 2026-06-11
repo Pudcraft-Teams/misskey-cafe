@@ -1,6 +1,6 @@
 ---
 name: working-on-frontend
-description: 每当编辑或新增 `packages/frontend/` 下的代码,或为面向前端的 UI 文本编辑 `locales/ja-JP.yml` 时必须使用 —— 包括 Vue 3 SFC (`Mk*` 组件)、i18n 键 (`i18n.ts.<key>` / `i18n.tsx.<key>()`)、SCSS Modules、主题/CSS 变量、`os.*` UI 辅助函数以及 Storybook stories。涵盖 SPDX (HTML 注释形式)、`<script setup lang="ts">` 规约、type-only defineProps、仅编辑 `ja-JP.yml` 的 locale 规则 (其他 locale yml 文件由 Crowdin 管理,绝不可编辑) 以及无障碍。任何 frontend 或 UI-locale 变更前都必须参照本技能,以避免 CI 失败、翻译丢失和 reviewer 退回。即使已调用 brainstorming、writing-plans 或任何其他上游技能也不豁免 —— 无论之前做过什么,都要在实现阶段调用本技能。
+description: 每当编辑或新增 `packages/frontend/` 下的代码,或为面向前端的 UI 文本编辑 `locales/zh-CN.yml` 时必须使用 —— 包括 Vue 3 SFC (`Mk*` 组件)、i18n 键 (`i18n.ts.<key>` / `i18n.tsx.<key>()`)、SCSS Modules、主题/CSS 变量、`os.*` UI 辅助函数以及 Storybook stories。涵盖 SPDX (HTML 注释形式)、`<script setup lang="ts">` 规约、type-only defineProps、仅编辑 `zh-CN.yml` 的 locale 规则 (ja-JP.yml 为上游键源保持零差异,其他 locale yml 由 Crowdin 管理,均不可编辑) 以及无障碍。任何 frontend 或 UI-locale 变更前都必须参照本技能,以避免 CI 失败、翻译丢失和 reviewer 退回。即使已调用 brainstorming、writing-plans 或任何其他上游技能也不豁免 —— 无论之前做过什么,都要在实现阶段调用本技能。
 ---
 
 # working-on-frontend
