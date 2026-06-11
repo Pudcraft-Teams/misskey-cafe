@@ -203,8 +203,8 @@ _settings:
 ### 如果不慎做了简单重命名
 
 ```bash
-# 用 git diff 务必确认其他语言 yml 没有被改动 (输出为空即 OK)
-git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'
+# 用 git diff 务必确认其他 yml 没有被改动 (输出为空即 OK; fork 只维护 zh-CN.yml,ja-JP.yml 也须零差异)
+git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/zh-CN\.yml$'
 ```
 
 把 `grep -v 'ja-JP.yml'` 作用在 diff 正文上的写法,即便只改了 ja-JP.yml,新增行 (`+`) 也会被放行而必然非空,因此不要用。**只对文件名作用 grep**。

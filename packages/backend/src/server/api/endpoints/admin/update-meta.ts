@@ -37,6 +37,11 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		disabledUnicodeEmojis: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		sensitiveWords: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
@@ -248,6 +253,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.blockedHosts)) {
 				set.blockedHosts = ps.blockedHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (Array.isArray(ps.disabledUnicodeEmojis)) {
+				set.disabledUnicodeEmojis = ps.disabledUnicodeEmojis.map(x => x.trim()).filter(Boolean);
 			}
 
 			if (Array.isArray(ps.sensitiveWords)) {

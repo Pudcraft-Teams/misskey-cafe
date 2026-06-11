@@ -33,4 +33,4 @@ misskey-cafe 是 [misskey-dev/misskey](https://github.com/misskey-dev/misskey) �
 
 本项目基于上游 [Misskey](https://github.com/misskey-dev/misskey)（syuilo 与 misskey-project 各位贡献者）的工作，遵循 AGPL-3.0-only。
 
-翻译改进请前往上游 [Crowdin 项目](https://crowdin.com/project/misskey)，不要直接修改本仓库的 locale 文件（`locales/ja-JP.yml` 除外）。
+本 fork 的界面文案以简体中文为最终回退语言：fork 特有功能的文案只维护在 `locales/zh-CN.yml`，`locales/ja-JP.yml` 与其他语言文件保持与上游一致不做修改。上游文案的翻译改进请前往上游 [Crowdin 项目](https://crowdin.com/project/misskey)；欢迎贡献者通过 PR 为 fork 特有功能补充其他语言的翻译。

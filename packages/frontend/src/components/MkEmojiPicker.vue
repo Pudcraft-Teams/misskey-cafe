@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="computed(() => availableEmojiCharByCategory.get(category) ?? [])" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -119,8 +119,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import {
-	emojilist,
-	emojiCharByCategory,
 	unicodeEmojiCategories as categories,
 	getEmojiName,
 	getUnicodeEmoji,
@@ -139,6 +137,7 @@ import { store } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/i.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
+import { availableEmojilist, availableEmojiCharByCategory, isUnicodeEmojiDisabled } from '@/utility/disabled-unicode-emojis.js';
 import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
 import { haptic } from '@/utility/haptic.js';
@@ -174,10 +173,10 @@ const {
 const recentlyUsedEmojis = store.r.recentlyUsedEmojis;
 
 const recentlyUsedEmojisDef = computed(() => {
-	return recentlyUsedEmojis.value.map(getDef);
+	return recentlyUsedEmojis.value.filter(emoji => emoji.includes(':') || !isUnicodeEmojiDisabled(emoji)).map(getDef);
 });
 const pinnedEmojisDef = computed(() => {
-	return pinned.value?.map(getDef);
+	return pinned.value?.filter(emoji => emoji.includes(':') || !isUnicodeEmojiDisabled(emoji)).map(getDef);
 });
 
 const pinned = computed(() => props.pinnedEmojis);
@@ -307,7 +306,7 @@ watch(q, () => {
 
 	const searchUnicode = () => {
 		const max = 100;
-		const emojis = emojilist;
+		const emojis = availableEmojilist.value;
 		const matches = new Set<UnicodeEmojiDef>();
 
 		const exactMatch = emojis.find(emoji => emoji.name === newQ);
@@ -481,7 +480,7 @@ function done(query?: string): boolean | void {
 		chosen(exactMatchCustom);
 		return true;
 	}
-	const exactMatchUnicode = emojilist.find(emoji => emoji.char === q2 || emoji.name === q2);
+	const exactMatchUnicode = availableEmojilist.value.find(emoji => emoji.char === q2 || emoji.name === q2);
 	if (exactMatchUnicode) {
 		chosen(exactMatchUnicode);
 		return true;

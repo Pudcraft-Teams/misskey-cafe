@@ -61,8 +61,24 @@ function createMembers(record: LocaleRecord): ts.TypeElement[] {
 	});
 }
 
+// fork(misskey-cafe): fork 特有键只维护在 zh-CN.yml(不动 ja-JP.yml),
+// 因此类型生成需并入 zh-CN 中 ja-JP 没有的键(ja-JP 优先,保证上游键的输出与上游一致)
+function mergeMissing(base: LocaleRecord, extra: LocaleRecord): LocaleRecord {
+	const result: LocaleRecord = { ...base };
+	for (const [k, v] of Object.entries(extra)) {
+		if (!(k in result)) {
+			result[k] = v;
+		} else if (typeof result[k] === 'object' && typeof v === 'object') {
+			result[k] = mergeMissing(result[k] as LocaleRecord, v as LocaleRecord);
+		}
+	}
+	return result;
+}
+
 export async function generateLocaleInterface(localesDir: string): Promise<void> {
-	const locale = yaml.load(fs.readFileSync(`${localesDir}/ja-JP.yml`, 'utf-8').toString()) as LocaleRecord;
+	const jaJP = yaml.load(fs.readFileSync(`${localesDir}/ja-JP.yml`, 'utf-8').toString()) as LocaleRecord;
+	const zhCN = yaml.load(fs.readFileSync(`${localesDir}/zh-CN.yml`, 'utf-8').toString()) as LocaleRecord;
+	const locale = mergeMissing(jaJP, zhCN);
 	const members = createMembers(locale);
 
 	const elements: ts.Statement[] = [

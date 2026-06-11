@@ -13322,4 +13322,12 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
+    /**
+     * 禁用的 Unicode 表情符号
+     */
+    "disabledUnicodeEmojis": string;
+    /**
+     * 指定的 Unicode 表情符号将从表情选择器中隐藏，本地用户也无法将其用作回应。出现在帖子等内容中时会显示为无效表情。每行输入一个表情符号。不影响点赞（❤）的回退行为。
+     */
+    "disabledUnicodeEmojisDescription": string;
 }

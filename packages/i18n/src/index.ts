@@ -68,23 +68,34 @@ function build(): Record<Language, Locale> {
 
 	removeEmpty(locales);
 
+	// fork(misskey-cafe): 最终回退语言为简体中文(zh-CN)。
+	// ja-JP 仅作为键完整性的兜底(上游新增键尚未补进 zh-CN 时避免 undefined)。
+	const base = merge<Locale>(locales['ja-JP'] as Locale, locales['zh-CN']);
+
 	return Object.entries(locales).reduce<Record<Language, Locale>>((a, [k, v]) => {
 		const lang = k.split('-')[0];
 		const key = k as Language;
 
 		switch (key) {
 			case 'ja-JP':
-				a[key] = v as Locale;
+				// fork 特有键只存在于 zh-CN,经 base 以中文兜底;上游键仍为日文原文
+				a[key] = merge<Locale>(base, v);
 				break;
 			case 'ja-KS':
-			case 'en-US':
+				// 日文方言以 ja-JP 为回退
+				a[key] = merge<Locale>(base, locales['ja-JP'], v);
+				break;
+			case 'zh-CN':
 				a[key] = merge<Locale>(locales['ja-JP'] as Locale, v);
+				break;
+			case 'en-US':
+				a[key] = merge<Locale>(base, v);
 				break;
 			default: {
 				const primaryLang = lang as PrimaryLang;
 				const primaryKey = (lang in primaries ? `${lang}-${primaries[primaryLang]}` : undefined) as Language | undefined;
 				a[key] = merge<Locale>(
-					locales['ja-JP'] as Locale,
+					base,
 					locales['en-US'],
 					primaryKey ? locales[primaryKey] : {},
 					v,

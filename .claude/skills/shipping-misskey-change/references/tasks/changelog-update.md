@@ -12,12 +12,12 @@
 
 ## 条目格式
 
-在对应子小节按 `- <Prefix>: <概要>` 的格式追加。Prefix 首字母大写。
+在对应子小节按 `- <Prefix>: <概要>` 的格式追加。Prefix 首字母大写。**概要正文使用简体中文**（fork 语言规约，见 [AGENTS.md](../../../../../AGENTS.md)）；从上游合并进来的既有日文条目保持原样，不做翻译。
 
 ```text
-- Enhance: ノートの詳細表示での公開範囲の表示を改善
-- Fix: 通知が約10秒遅延する問題を修正
-- Feat: 新機能の追加
+- Enhance: 改善帖子详情页公开范围的显示
+- Fix: 修复通知延迟约 10 秒的问题
+- Feat: 新增某某功能
 ```
 
 | Prefix | 用途 |
@@ -27,7 +27,7 @@
 | `Fix:` | 修复 bug |
 | `Note:` | 并非功能变更但想告知用户的事项 (设置被重置、新增 config 项、不兼容的行为变更等) |
 
-`Note:` 不是 Feat / Enhance / Fix 那样的变更本身,而是用来传达「更新后用户需要知道的注意事项」(例: `- Note: アップデート後、サウンドに関する設定が初期化されます`)。在对应子小节内以 `- Note: ...` 的形式放置。某些 release 也会在 `## <version>` 正下方设置 `### Note` 专用子小节 (既有历史中两种形式都有)。新增时按邻近既有条目的写法对齐。
+`Note:` 不是 Feat / Enhance / Fix 那样的变更本身,而是用来传达「更新后用户需要知道的注意事项」(例: `- Note: 更新后，声音相关设置将被重置`)。在对应子小节内以 `- Note: ...` 的形式放置。某些 release 也会在 `## <version>` 正下方设置 `### Note` 专用子小节 (既有历史中两种形式都有)。新增时按邻近既有条目的写法对齐。
 
 ## 不可触碰的范围
 
@@ -47,15 +47,15 @@
 
 | 参数示意 | 结果 |
 |---|---|
-| server, `Fix: 通知が遅延する問題を修正` | 在 `### Server` 末尾追加 `- Fix: 通知が遅延する問題を修正` |
-| client, `Enhance: ノートの表示を改善` | 在 `### Client` 末尾追加 `- Enhance: ノートの表示を改善` |
-| general, `Feat: 新機能の追加` | 把 `### General` 的占位符 `-` 替换为 `- Feat: 新機能の追加` |
+| server, `Fix: 修复通知延迟的问题` | 在 `### Server` 末尾追加 `- Fix: 修复通知延迟的问题` |
+| client, `Enhance: 改善帖子的显示` | 在 `### Client` 末尾追加 `- Enhance: 改善帖子的显示` |
+| general, `Feat: 新增某某功能` | 把 `### General` 的占位符 `-` 替换为 `- Feat: 新增某某功能` |
 
 ## 与提交信息格式的区别
 
 CHANGELOG 和提交信息 **格式不同**:
 
-- CHANGELOG: `- Enhance: ノートの表示を改善` (首字母大写的英文 Prefix + 冒号 + 日文正文)
-- 提交信息: `enhance(frontend): improve note display` (小写 + scope + 冒号 + 英文正文。详见 [CONTRIBUTING.md](../../../../../CONTRIBUTING.md))
+- CHANGELOG: `- Enhance: 改善帖子的显示` (首字母大写的英文 Prefix + 冒号 + 简体中文正文)
+- 提交信息: `enhance(frontend): 改善帖子的显示` (小写 prefix + scope + 冒号的形式沿用 [CONTRIBUTING.md](../../../../../CONTRIBUTING.md)，正文按 fork 语言规约默认简体中文)
 
 在同一个 PR 里同时更新两者时不要混淆。

@@ -147,6 +147,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 				</SearchMarker>
+
+				<SearchMarker :keywords="['emoji', 'unicode', 'disabled', 'reaction']">
+					<MkFolder>
+						<template #icon><SearchIcon><i class="ti ti-mood-off"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.disabledUnicodeEmojis }}</SearchLabel></template>
+
+						<div class="_gaps">
+							<MkTextarea v-model="disabledUnicodeEmojis">
+								<template #caption>{{ i18n.ts.disabledUnicodeEmojisDescription }}</template>
+							</MkTextarea>
+							<MkButton primary @click="save_disabledUnicodeEmojis">{{ i18n.ts.save }}</MkButton>
+						</div>
+					</MkFolder>
+				</SearchMarker>
 			</div>
 		</SearchMarker>
 	</div>
@@ -194,6 +208,7 @@ const preservedUsernames = ref(meta.preservedUsernames.join('\n'));
 const blockedHosts = ref(meta.blockedHosts.join('\n'));
 const silencedHosts = ref(meta.silencedHosts?.join('\n') ?? '');
 const mediaSilencedHosts = ref(meta.mediaSilencedHosts.join('\n'));
+const disabledUnicodeEmojis = ref(meta.disabledUnicodeEmojis?.join('\n') ?? '');
 
 async function onChange_enableRegistration(value: boolean) {
 	if (value) {
@@ -280,6 +295,14 @@ function save_blockedHosts() {
 function save_silencedHosts() {
 	os.apiWithDialog('admin/update-meta', {
 		silencedHosts: silencedHosts.value.split('\n') || [],
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_disabledUnicodeEmojis() {
+	os.apiWithDialog('admin/update-meta', {
+		disabledUnicodeEmojis: disabledUnicodeEmojis.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});

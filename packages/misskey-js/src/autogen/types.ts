@@ -5471,6 +5471,7 @@ export type components = {
             uri: string;
             description: string | null;
             langs: string[];
+            disabledUnicodeEmojis: string[];
             tosUrl: string | null;
             /** @default https://github.com/misskey-dev/misskey */
             repositoryUrl: string | null;
@@ -9452,6 +9453,7 @@ export interface operations {
                         pinnedUsers: string[];
                         hiddenTags: string[];
                         blockedHosts: string[];
+                        disabledUnicodeEmojis: string[];
                         sensitiveWords: string[];
                         prohibitedWords: string[];
                         prohibitedWordsForNameOfUser: string[];
@@ -12878,6 +12880,7 @@ export interface operations {
                     pinnedUsers?: string[] | null;
                     hiddenTags?: string[] | null;
                     blockedHosts?: string[] | null;
+                    disabledUnicodeEmojis?: string[] | null;
                     sensitiveWords?: string[] | null;
                     prohibitedWords?: string[] | null;
                     prohibitedWordsForNameOfUser?: string[] | null;
