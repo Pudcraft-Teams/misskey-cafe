@@ -1,24 +1,20 @@
-<!-- ℹ お読みください / README
-PRありがとうございます！ PRを作成する前に、コントリビューションガイドをご確認ください:
-Thank you for your PR! Before creating a PR, please check the contribution guide:
-https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md
+<!-- ℹ 请先阅读 / README
+感谢你的 PR！创建 PR 前请先确认贡献指南:
+https://github.com/Pudcraft-Teams/misskey-cafe/blob/develop/CONTRIBUTING.md
 -->
 
 ## What
-<!-- このPRで何をしたのか？ どう変わるのか？ -->
-<!-- What did you do with this PR? How will it change things? -->
+<!-- 这个 PR 做了什么？会带来什么变化？ -->
 
 ## Why
-<!-- なぜそうするのか？ どういう意図なのか？ 何が困っているのか？ -->
-<!-- Why do you do it? What are your intentions? What is the problem? -->
+<!-- 为什么这么做？意图是什么？遇到了什么问题？ -->
 
 ## Additional info (optional)
-<!-- テスト観点など -->
-<!-- Test perspective, etc -->
+<!-- 测试观点等补充信息 -->
 
 ## Checklist
-- [ ] Read the [contribution guide](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md)
-- [ ] Test working in a local environment
-- [ ] (If needed) Add story of storybook
-- [ ] (If needed) Update CHANGELOG.md
-- [ ] (If possible) Add tests
+- [ ] 已阅读[贡献指南](https://github.com/Pudcraft-Teams/misskey-cafe/blob/develop/CONTRIBUTING.md)
+- [ ] 已在本地环境验证可正常工作
+- [ ] (如需要) 添加了 Storybook story
+- [ ] (如需要) 更新了 CHANGELOG.md
+- [ ] (如可能) 添加了测试

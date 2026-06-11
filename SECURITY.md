@@ -1,20 +1,21 @@
-# Reporting Security Issues
+# 安全问题报告
 
-If you discover a security issue in Misskey, please report it by **[this form](https://github.com/misskey-dev/misskey/security/advisories/new)**.
+如果你在 misskey-cafe 中发现安全问题，请通过 **[本仓库的安全公告表单](https://github.com/Pudcraft-Teams/misskey-cafe/security/advisories/new)** 报告，不要公开提 Issue。
 
-This will allow us to assess the risk, and make a fix available before we add a
-bug report to the GitHub repository.
+这能让我们在向 GitHub 仓库添加公开 bug 报告之前先评估风险并准备好修复。
 
-Thanks for helping make Misskey safe for everyone.
+如果该漏洞同样存在于上游 Misskey（misskey-dev/misskey），请同时通过 **[上游的安全公告表单](https://github.com/misskey-dev/misskey/security/advisories/new)** 负责任地向上游报告。
 
-> [!note]
-> CNA [requires](https://www.cve.org/ResourcesSupport/AllResources/CNARules#section_5-2_Description) that CVEs include a description in English for inclusion in the CVE Catalog.
-> 
-> When creating a security advisory, all content must be written in English (it is acceptable to include a non-English description along with the English one).
-
-## When create a patch
-
-If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
+感谢你帮助 misskey-cafe 和 Misskey 生态对所有人保持安全。
 
 > [!note]
-> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
+> CNA [要求](https://www.cve.org/ResourcesSupport/AllResources/CNARules#section_5-2_Description) CVE 必须包含英文描述以收录进 CVE Catalog。
+>
+> 创建 security advisory 时，所有内容须以英文撰写（可以在英文描述之外附带其他语言的描述）。
+
+## 提交修复补丁时
+
+如果你还能为该漏洞编写修复补丁，请在 private fork 上创建 PR。
+
+> [!note]
+> GitHub 存在一个 bug：如果 PR 没有跟上 upstream 的 develop 分支就无法合并，因此请保持跟随 develop 分支。

@@ -1,184 +1,191 @@
-# Contribution guide
-We're glad you're interested in contributing Misskey! In this document you will find the information you need to contribute to the project.
+# 贡献指南
+很高兴你有兴趣为 misskey-cafe 做贡献！本文档汇集了为本项目贡献所需的信息。
 
 > [!NOTE]
-> This project uses Japanese as its major language, **but you do not need to translate and write the Issues/PRs in Japanese.**
-> Also, you might receive comments on your Issue/PR in Japanese, but you do not need to reply to them in Japanese as well.\
-> The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
-> It will also allow the reader to use the translation tool of their preference if necessary.
+> 本 fork 主要使用简体中文交流，**但你不需要把 Issue/PR 翻译成中文，可用任何语言提交。**
+> 上游 Misskey 项目主要使用日语，因此你可能会在 Issue/PR 上收到日语评论，但同样不需要用日语回复。\
+> 机器翻译成日语的准确度不高，所以用原文撰写反而更易于我们理解。
+> 这样读者也能在必要时使用自己偏好的翻译工具。
 
-## Roadmap
-See [ROADMAP.md](./ROADMAP.md)
+## 路线图（Roadmap）
+参见 [ROADMAP.md](./ROADMAP.md)
 
 ## Issues
-Before creating an issue, please check the following:
-- To avoid duplication, please search for similar issues before creating a new issue.
-- Do not use Issues to ask questions or troubleshooting.
-	- Issues should only be used to feature requests, suggestions, and bug tracking.
-	- Please ask questions or troubleshooting in [GitHub Discussions](https://github.com/misskey-dev/misskey/discussions) or [Discord](https://discord.gg/Wp8gVStHW3).
+创建 Issue 前，请检查以下事项：
+- 为避免重复，请在创建新 Issue 前搜索是否已有类似 Issue。
+- 不要用 Issue 来提问或排查故障。
+	- Issue 仅应用于功能请求、建议和 Bug 跟踪。
+	- 提问或排查故障请前往本 fork 的 [GitHub Discussions](https://github.com/Pudcraft-Teams/misskey-cafe/discussions)。上游社区另有 [Discord](https://discord.gg/Wp8gVStHW3)（上游社区频道），但与本 fork 相关的问题请优先使用本 fork 的 Discussions。
 
 > [!WARNING]
-> Do not close issues that are about to be resolved. It should remain open until a commit that actually resolves it is merged.
+> 不要关闭即将被解决的 Issue。它应保持开启，直到真正解决它的 commit 被合并为止。
 
-### Recommended discussing before implementation
-We welcome your proposal.
+### 建议在实现前先讨论
+我们欢迎你的提案。
 
-When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
+当你想添加功能或修复 Bug 时，**请先在 Issue 中对设计和方针进行评审**（如果还没有相应 Issue，请创建一个）。缺少这一步，即使实现了 PR 也很可能不会被合并。
 
-At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
-PRs that do not have a clear set of do's and don'ts tend to be bloated and difficult to review.
+此时你还需要明确将要创建的 PR 的目标，并确保团队其他成员了解这些目标。
+没有明确界定「该做什么、不该做什么」的 PR 往往会膨胀，难以评审。
 
-Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask Committer to assign you).
-By expressing your intention to work on the Issue, you can prevent conflicts in the work.
+另外，当你开始实现时，请将自己 assign 到该 Issue（如果无法自行操作，请让 Committer 为你 assign）。
+通过表明你打算处理该 Issue，可以避免工作冲突。
 
-To the Committers: you should not assign someone on it before the Final Decision.
+致 Committer：在做出最终决定（Final Decision）之前，不应将某人 assign 到该 Issue。
 
-### How issues are triaged
+### Issue 如何被分类处理
 
-The Committers may:
-* close an issue that is not reproducible on latest stable release,
-* merge an issue into another issue,
-* split an issue into multiple issues,
-* or re-open that has been closed for some reason which is not applicable anymore.
+Committer 可能会：
+* 关闭在最新稳定版上无法复现的 Issue，
+* 将一个 Issue 合并到另一个 Issue，
+* 将一个 Issue 拆分为多个 Issue，
+* 或重新开启因某些已不再适用的原因而被关闭的 Issue。
 
-@syuilo reserves the Final Decision rights including whether the project will implement feature and how to implement, these rights are not always exercised.
+在本 fork 中，最终决定权（Final Decision，包括项目是否实现某功能以及如何实现）由 Pudcraft-Teams 维护者拥有；这些权利不一定总会行使。涉及上游通用行为的变更建议，也请同时考虑向上游 [misskey-dev/misskey](https://github.com/misskey-dev/misskey) 提交。
 
-## Well-known branches
-- **`master`** branch is tracking the latest release and used for production purposes.
-- **`develop`** branch is where we work for the next release.
-	- When you create a PR, basically target it to this branch.
-- **`l10n_develop`** branch is reserved for localization management.
+## 常见分支
+- **`master`** 分支跟踪最新发布版本，用于生产环境。
+- **`develop`** 分支是我们为下一个发布版本开发的地方。
+	- 创建 PR 时，基本上应以此分支为目标。
+	- 本 fork 也是将上游变更合并进 `develop` 分支的。
+- **`l10n_develop`** 分支保留用于本地化管理。
 
-## Creating a PR
-Thank you for your PR! Before creating a PR, please check the following:
-- If possible, prefix the title with a keyword that identifies the type of this PR, as shown below.
-	- `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` etc
-	- Also, make sure that the granularity of this PR is appropriate. Please do not include more than one type of change or interest in a single PR.
-- If there is an Issue which will be resolved by this PR, please include a reference to the Issue in the text.
-- Please add the summary of the changes to [`CHANGELOG.md`](/CHANGELOG.md). However, this is not necessary for changes that do not affect the users, such as refactoring.
-- Check if there are any documents that need to be created or updated due to this change.
-- If you have added a feature or fixed a bug, please add a test case if possible.
-- Please make sure that tests and Lint are passed in advance.
-	- You can run it with `pnpm test` and `pnpm lint`. [See more info](#testing)
-- If this PR includes UI changes, please attach a screenshot in the text.
+## 创建 PR
+感谢你的 PR！创建 PR 前，请检查以下事项：
+- 如果可能，请在标题前加上能标识此 PR 类型的关键字前缀，如下所示。
+	- `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` 等
+	- 另外，请确保此 PR 的粒度合适。请不要在单个 PR 中包含多种类型的变更或关注点。
+- 如果有某个 Issue 将被此 PR 解决，请在正文中引用该 Issue。
+- 请把变更摘要添加到 [`CHANGELOG.md`](/CHANGELOG.md)。不过，对于不影响用户的变更（如重构）则无需如此。
+- 检查是否有文档因本次变更需要创建或更新。
+- 如果你添加了功能或修复了 Bug，请尽可能添加测试用例。
+- 请事先确保测试和 Lint 都通过。
+	- 你可以用 `pnpm test` 和 `pnpm lint` 运行它们。[查看更多信息](#testing)
+- 如果此 PR 包含 UI 变更，请在正文中附上截图。
 
-Thanks for your cooperation 🤗
+感谢你的配合 🤗
 
-### Additional things for ActivityPub payload changes
-*This section is specific to misskey-dev implementation. Other fork or implementation may take different way. A significant difference is that non-"misskey-dev" extension is not described in the misskey-hub's document.*
+### ActivityPub payload 变更的附加事项
+*本节针对上游 misskey-dev 的实现。其他 fork 或实现可能采用不同方式。一个显著差异是：非「misskey-dev」的扩展不会被记录在 misskey-hub 的文档中。*
 
-If PR includes changes to ActivityPub payload, please reflect it in [misskey-hub's document](https://github.com/misskey-dev/misskey-hub-next/blob/master/content/ns.md) by sending PR.
+如果 PR 包含对 ActivityPub payload 的变更，请通过向 [misskey-hub 的文档](https://github.com/misskey-dev/misskey-hub-next/blob/master/content/ns.md)（上游）发送 PR 来反映它。
 
-The name of purporsed extension property (referred as "extended property" in later) to ActivityPub shall be prefixed by `_misskey_`. (i.e. `_misskey_quote`)
+向 ActivityPub 提议的扩展属性（下文称为「扩展属性」）的名称应以 `_misskey_` 为前缀。（例如 `_misskey_quote`）
 
-The extended property in `packages/backend/src/core/activitypub/type.ts` **must** be declared as optional because ActivityPub payloads that comes from older Misskey or other implementation may not contain it.
+`packages/backend/src/core/activitypub/type.ts` 中的扩展属性**必须**声明为可选，因为来自较旧 Misskey 或其他实现的 ActivityPub payload 可能不包含它。
 
-The extended property must be included in the context definition. Context is defined in `packages/backend/src/core/activitypub/misc/contexts.ts`.
-The key shall be same as the name of extended property, and the value shall be same as "short IRI".
+扩展属性必须包含在 context 定义中。Context 定义在 `packages/backend/src/core/activitypub/misc/contexts.ts` 中。
+其键应与扩展属性的名称相同，值应与「短 IRI（short IRI）」相同。
 
-"Short IRI" is defined in misskey-hub's document, but usually takes form of `misskey:<name of extended property>`. (i.e. `misskey:_misskey_quote`)
+「短 IRI」在 misskey-hub 的文档中有定义，但通常采用 `misskey:<扩展属性名>` 的形式。（例如 `misskey:_misskey_quote`）
 
-One should not add property that has defined before by other implementation, or add custom variant value to "well-known" property.
+不应添加其他实现已经定义过的属性，也不应为「众所周知（well-known）」的属性添加自定义变体值。
 
-## Reviewers guide
-Be willing to comment on the good points and not just the things you want fixed 💯
+> [!NOTE]
+> 新的 `_misskey_` AP 扩展理想情况下应通过上游 misskey-dev 推进，以便与生态系统保持兼容；为了持续合并上游，本 fork 不鼓励引入 fork 专有的 ActivityPub 扩展。
 
-読んでおくといいやつ
+## 评审者指南
+要乐于评论优点，而不只是你想修改的地方 💯
+
+值得一读的资料（日文参考资料）
 - https://blog.lacolaco.net/posts/1e2cf439b3c2/
 - https://konifar-zatsu.hatenadiary.jp/entry/2024/11/05/192421
 
-### Review perspective
-- Scope
-	- Are the goals of the PR clear?
-	- Is the granularity of the PR appropriate?
-- Security
-	- Does merging this PR create a vulnerability?
-- Performance
-	- Will merging this PR cause unexpected performance degradation?
-	- Is there a more efficient way?
-- Testing
-	- Does the test ensure the expected behavior?
-	- Are there any omissions or gaps?
-	- Does it check for anomalies?
+### 评审视角
+- 范围（Scope）
+	- PR 的目标是否清晰？
+	- PR 的粒度是否合适？
+- 安全（Security）
+	- 合并此 PR 是否会制造漏洞？
+- 性能（Performance）
+	- 合并此 PR 是否会导致意外的性能下降？
+	- 是否有更高效的方式？
+- 测试（Testing）
+	- 测试是否确保了预期行为？
+	- 是否存在遗漏或缺口？
+	- 是否检查了异常情况？
 
-## Security Advisory
-### For reporter
-Thank you for your reporting!
+## 安全公告（Security Advisory）
+### 致报告者
+感谢你的报告！
 
-If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
+如果你也能创建修复该漏洞的补丁，请在私有 fork 上创建 PR。
 
 > [!note]
-> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
+> 由于存在一个 GitHub Bug，若 PR 未追随 upstream 的 develop 分支则无法合并，所以请保持追随 develop 分支。
 
-### For misskey-dev member
-修正PRがdevelopに追従されていないとマージできないので、マージできなかったら
+### 致维护者成员
+修复 PR 若未追随 develop 分支则无法合并，因此当无法合并时，可以这样提醒对方：
 
 > Could you merge or rebase onto upstream develop branch?
 
-などと伝える。
-
-## Deploy
-The `/deploy` command by issue comment can be used to deploy the contents of a PR to the preview environment.
+## 部署（Deploy）
+通过 Issue 评论使用 `/deploy` 命令，可以将 PR 的内容部署到预览环境。
 ```
 /deploy sha=<commit hash>
 ```
-An actual domain will be assigned so you can test the federation.
+会分配一个实际域名，以便你测试联合（federation）。
 
-## Merge
+## 合并（Merge）
 
-## Release
-### Release Instructions
-1. Commit version changes in the `develop` branch ([package.json](package.json))
-2. Create a release PR.
-	- Into `master` from `develop` branch.
-	- The title must be in the format `Release: x.y.z`.
-		- `x.y.z` is the new version you are trying to release.
-3. Deploy and perform a simple QA check. Also verify that the tests passed.
-4. Merge it. (Do not squash commit)
-5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
-	- The target branch must be `master`
-	- The tag name must be the version
+## 发布（Release）
+### 发布说明
+1. 在 `develop` 分支提交版本变更（[package.json](package.json)）
+2. 创建发布 PR。
+	- 从 `develop` 分支合入 `master`。
+	- 标题必须采用 `Release: x.y.z` 格式。
+		- `x.y.z` 是你要发布的新版本号。
+3. 部署并执行简单的 QA 检查。同时确认测试已通过。
+4. 合并它。（不要 squash commit）
+5. 在本 fork 创建一个 [GitHub release](https://github.com/Pudcraft-Teams/misskey-cafe/releases)
+	- 目标分支必须为 `master`
+	- 标签名必须为版本号
 
 > [!NOTE]
-> Why this instruction is necessary:
-> - To perform final QA checks
-> - To distribute responsibility
-> - To check direct commits to develop
-> - To celebrate the release together 🎉
+> 为何需要此流程：
+> - 进行最终 QA 检查
+> - 分散责任
+> - 检查直接提交到 develop 的内容
+> - 一起庆祝发布 🎉
 
-## Localization (l10n)
-Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
-You can improve our translations with your Crowdin account.
-Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
-The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
+## 本地化（l10n）
+Misskey 使用 [Crowdin](https://crowdin.com/project/misskey)（上游）进行本地化管理。
 
-If your language is not listed in Crowdin, please open an issue. We will add it to Crowdin.
-For newly added languages, once the translation progress per language exceeds 70%, it will be officially introduced into Misskey and made available to users.
+> [!IMPORTANT]
+> 翻译由上游通过 Crowdin 管理，并随上游合并进入本 fork；因此除 `locales/ja-JP.yml` 外的 locale 文件一律不要手动编辑，否则会在合并上游时产生冲突或被覆盖。
+> 想改进翻译，请前往上游的 Crowdin 项目（https://crowdin.com/project/misskey）。
+
+在上游 Crowdin 中，你可以用自己的 Crowdin 账户改进翻译。
+你在 Crowdin 中的更改会自动作为 PR（标题为「New Crowdin translations」）提交到上游仓库。
+上游维护者会在下一次发布前将该 PR 合并到 develop 分支，随后这些更改会通过合并上游进入本 fork。
+
+如果上游 Crowdin 中没有列出你的语言，请在上游项目开一个 Issue，上游会将其添加到 Crowdin。
+对于新添加的语言，一旦该语言的翻译进度超过 70%，它就会被正式引入 Misskey 并提供给用户。
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
-## Development
-### Setup
-Before developing, you have to set up environment. Misskey requires Redis, PostgreSQL, and FFmpeg.
+## 开发
+### 环境搭建
+开发前，你需要搭建环境。Misskey 需要 Redis、PostgreSQL 和 FFmpeg。
 
-You would want to install Meilisearch to experiment related features. Technically, meilisearch is not strict requirement, but some features and tests require it.
+你可能还想安装 Meilisearch 来体验相关功能。严格来说，Meilisearch 并非硬性要求，但部分功能和测试需要它。
 
-There are a few ways to proceed.
+有几种方式可以进行。
 
-#### Use system-wide software
-You could install them in system-wide (such as from package manager).
+#### 使用系统级软件
+你可以将它们安装在系统级（例如通过包管理器）。
 
-#### Use `docker compose`
-You could obtain middleware container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml up -d`.
+#### 使用 `docker compose`
+你可以通过输入 `docker compose -f $PROJECT_ROOT/compose.local-db.yml up -d` 来获取中间件容器。
 
-#### Use Devcontainer
-Devcontainer also has necessary setting. This method can be done by connecting from VSCode.
+#### 使用 Devcontainer
+Devcontainer 也已包含必要的配置。此方式可通过从 VSCode 连接来完成。
 
-Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
-To use Dev Container, open the project directory on VSCode with Dev Containers installed.
-**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
+无需在本地运行 `pnpm`，你可以使用 Dev Container 来搭建开发环境。
+要使用 Dev Container，请在已安装 Dev Containers 的 VSCode 中打开项目目录。
+**注意：** 如果你使用 Windows，请用 WSL 克隆仓库。使用 Git for Windows 会因换行符处理方式的差异而导致文件损坏。
 
-It will run the following command automatically inside the container.
+它会在容器内自动运行以下命令。
 ``` bash
 git submodule update --init
 pnpm install --frozen-lockfile
@@ -187,97 +194,97 @@ pnpm build
 pnpm migrate
 ```
 
-After finishing the migration, you can proceed.
+完成 migration 后，你就可以继续了。
 
 #### Cloudflare tunnel
-Cloudflare tunnelを使うとローカルのMisskeyサーバーをインターネットに公開できます。
-HTTPSでしか動作しない機能を検証したい時や、スマホなど別のデバイスからローカルのMisskeyサーバーを検証したい時に便利です。
+使用 Cloudflare tunnel 可以将本地的 Misskey 服务器公开到互联网。
+当你想验证仅在 HTTPS 下才能工作的功能，或想从手机等其他设备验证本地 Misskey 服务器时，这很方便。
 
-##### Cloudflare warpと併用する際のtips
+##### 与 Cloudflare warp 并用时的小贴士
 
-> cloudflared (Cloudflare Tunnel) は region1.v2.argotunnel.com / region2.v2.argotunnel.com に QUIC/HTTP2 でアウトバウンド接続するのですが、WARP を有効化するとこのトラフィックが WARP 経由になってループ/切断します。これら 2 ホストを WARP のトンネル除外（split tunnel）に追加することで、cloudflared だけは WARP をバイパスして直接 Cloudflare エッジへ接続できるようになります。
+> cloudflared（Cloudflare Tunnel）会通过 QUIC/HTTP2 向 region1.v2.argotunnel.com / region2.v2.argotunnel.com 发起出站连接，但启用 WARP 后这些流量会经由 WARP，导致环路/断连。将这 2 个主机添加到 WARP 的隧道排除（split tunnel）中，就能让 cloudflared 绕过 WARP 直接连接到 Cloudflare 边缘。
 
-### Start developing
-During development, it is useful to use the
+### 开始开发
+开发期间，使用
 ```
 pnpm dev
 ```
-command.
+命令会很有用。
 
-- Server-side source files and automatically builds them if they are modified. Automatically start the server process(es).
-- Service Worker is watched by esbuild.
-- Vite HMR (just the `vite` command) is available. The behavior may be different from production.
-- Vite runs behind the backend (the backend will proxy Vite at /vite and /embed_vite except for websocket used for HMR).
-- You can see Misskey by accessing `http://localhost:3000` (Replace `3000` with the port configured with `port` in .config/default.yml).
+- 服务端源文件被修改时会自动构建它们，并自动启动服务进程。
+- Service Worker 由 esbuild 监视。
+- 可使用 Vite HMR（即 `vite` 命令）。其行为可能与生产环境不同。
+- Vite 运行在后端之后（后端会在 /vite 和 /embed_vite 处代理 Vite，但用于 HMR 的 websocket 除外）。
+- 你可以通过访问 `http://localhost:3000` 来查看 Misskey（将 `3000` 替换为 .config/default.yml 中 `port` 配置的端口）。
 
-## Testing
-You can run non-backend tests by executing following commands:
+## 测试
+你可以通过执行以下命令运行非后端测试：
 ```sh
 pnpm --filter frontend test
 pnpm --filter misskey-js test
 ```
 
-Backend tests require manual preparation of servers. See the next section for more on this.
+后端测试需要手动准备服务器。详见下一节。
 
-### Backend
-There are three types of test codes for the backend:
-- Unit tests: [`/packages/backend/test/unit`](/packages/backend/test/unit)
-- Single-server E2E tests: [`/packages/backend/test/e2e`](/packages/backend/test/e2e)
-- Multiple-server E2E tests: [`/packages/backend/test-federation`](/packages/backend/test-federation)
+### 后端
+后端有三类测试代码：
+- 单元测试（Unit tests）：[`/packages/backend/test/unit`](/packages/backend/test/unit)
+- 单服务器 E2E 测试：[`/packages/backend/test/e2e`](/packages/backend/test/e2e)
+- 多服务器 E2E 测试：[`/packages/backend/test-federation`](/packages/backend/test-federation)
 
-#### Running Unit Tests or Single-server E2E Tests
-1. Create a config file:
+#### 运行单元测试或单服务器 E2E 测试
+1. 创建配置文件：
 ```sh
 cp .github/misskey/test.yml .config/
 ```
 
-2. Start DB and Redis servers for testing:
+2. 启动用于测试的 DB 和 Redis 服务器：
 ```sh
 docker compose -f packages/backend/test/compose.yml up
 ```
-Instead, you can prepare an empty (data can be erased) DB and edit `.config/test.yml` appropriately.
+或者，你也可以准备一个空的（数据可被清除的）DB，并适当编辑 `.config/test.yml`。
 
-3. Run all tests:
+3. 运行所有测试：
 ```sh
-pnpm --filter backend test     # unit tests
-pnpm --filter backend test:e2e # single-server E2E tests
+pnpm --filter backend test     # 单元测试
+pnpm --filter backend test:e2e # 单服务器 E2E 测试
 ```
-If you want to run a specific test, run as a following command:
+如果你想运行特定测试，请像下面这样运行：
 ```sh
 pnpm --filter backend test -- packages/backend/test/unit/activitypub.ts
 pnpm --filter backend test:e2e -- packages/backend/test/e2e/nodeinfo.ts
 ```
 
-#### Running Multiple-server E2E Tests
-See [`/packages/backend/test-federation/README.md`](/packages/backend/test-federation/README.md).
+#### 运行多服务器 E2E 测试
+参见 [`/packages/backend/test-federation/README.md`](/packages/backend/test-federation/README.md)。
 
-## Environment Variable
+## 环境变量
 
-- `MISSKEY_CONFIG_YML`: Specify the file path of config.yml instead of default.yml (e.g. `2nd.yml`).
-- `MISSKEY_WEBFINGER_USE_HTTP`: If it's set true, WebFinger requests will be http instead of https, useful for testing federation between servers in localhost. NEVER USE IN PRODUCTION.
+- `MISSKEY_CONFIG_YML`：指定 config.yml 的文件路径以代替 default.yml（例如 `2nd.yml`）。
+- `MISSKEY_WEBFINGER_USE_HTTP`：若设为 true，WebFinger 请求将使用 http 而非 https，便于测试 localhost 内服务器间的联合。切勿在生产环境中使用。
 
-## Continuous integration
-Misskey uses GitHub Actions for executing automated tests.
-Configuration files are located in [`/.github/workflows`](/.github/workflows).
+## 持续集成（Continuous integration）
+Misskey 使用 GitHub Actions 执行自动化测试。
+配置文件位于 [`/.github/workflows`](/.github/workflows)。
 
 ## Vue
-Misskey uses Vue(v3) as its front-end framework.
-- Use TypeScript.
-- **When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
-	- Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
+Misskey 使用 Vue（v3）作为其前端框架。
+- 使用 TypeScript。
+- **创建新组件时，请使用 Composition API（配合 [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) 和 [ref sugar](https://github.com/vuejs/rfcs/discussions/369)）而非 Options API。**
+	- 部分现有组件是用 Options API 实现的，但那是旧的实现。我们也欢迎将这些组件迁移到 Composition API 的重构。
 
 ## Tabler Icons
-アイコンは、Production Build時に使用されていないものが削除されるようになっています。
+图标在 Production Build 时会移除未使用的部分。
 
-**アイコンを動的に設定する際には、 `ti-${someVal}` のような、アイコン名のみを動的に変化させる実装を行わないでください。**
-必ず `ti-xxx` のような完全なクラス名を含めるようにしてください。
+**动态设置图标时，请不要采用像 `ti-${someVal}` 这样仅动态改变图标名部分的实现。**
+请务必包含像 `ti-xxx` 这样完整的类名。
 
 ## nirax
-niraxは、Misskeyで使用しているオリジナルのフロントエンドルーティングシステムです。
-**vue-routerから影響を多大に受けているので、まずはvue-routerについて学ぶことをお勧めします。**
+nirax 是 Misskey 使用的原创前端路由系统。
+**它深受 vue-router 影响，所以建议你先学习 vue-router。**
 
-### ルート定義
-ルート定義は、以下の形式のオブジェクトの配列です。
+### 路由定义
+路由定义是以下形式的对象数组。
 
 ```ts
 {
@@ -292,35 +299,35 @@ niraxは、Misskeyで使用しているオリジナルのフロントエンド�
 ```
 
 > [!WARNING]
-> 現状、ルートは定義された順に評価されます。
-> たとえば、`/foo/:id`ルート定義の次に`/foo/bar`ルート定義がされていた場合、後者がマッチすることはありません。
+> 目前，路由按定义顺序求值。
+> 例如，如果在 `/foo/:id` 路由定义之后又定义了 `/foo/bar` 路由，则后者永远不会被匹配。
 
-### 複数のルーター
-vue-routerとの最大の違いは、niraxは複数のルーターが存在することを許可している点です。
-これにより、アプリ内ウィンドウでブラウザとは個別にルーティングすることなどが可能になります。
+### 多个路由器
+与 vue-router 的最大区别在于，nirax 允许存在多个路由器。
+这使得诸如在应用内窗口中独立于浏览器进行路由等成为可能。
 
 ## Storybook
 
-Misskey uses [Storybook](https://storybook.js.org/) for UI development.
+Misskey 使用 [Storybook](https://storybook.js.org/) 进行 UI 开发。
 
-### Setup & Run
+### 搭建与运行
 
-#### Setup
+#### 搭建
 
 ```bash
 pnpm --filter misskey-js build
 ```
 
-#### Run
+#### 运行
 
 ```bash
 pnpm --filter frontend storybook-dev
 ```
 
-### Usage
+### 用法
 
-When you create a new component (in this example, `MyComponent.vue`), the story file (`MyComponent.stories.ts`) will be automatically generated by the `.storybook/generate.js` script.
-You can override the default story by creating a impl story file (`MyComponent.stories.impl.ts`).
+当你创建一个新组件（本例中为 `MyComponent.vue`）时，story 文件（`MyComponent.stories.ts`）会由 `.storybook/generate.js` 脚本自动生成。
+你可以通过创建一个 impl story 文件（`MyComponent.stories.impl.ts`）来覆盖默认的 story。
 
 ```ts
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -356,14 +363,14 @@ export const Default = {
 } satisfies StoryObj<typeof MyComponent>;
 ```
 
-If you want to opt-out from the automatic generation, create a `MyComponent.stories.impl.ts` file and add the following line to the file.
+如果你想退出自动生成，请创建一个 `MyComponent.stories.impl.ts` 文件，并在其中添加以下一行。
 
 ```ts
 import MyComponent from './MyComponent.vue';
 void MyComponent;
 ```
 
-You can override the component meta by creating a meta story file (`MyComponent.stories.meta.ts`).
+你可以通过创建一个 meta story 文件（`MyComponent.stories.meta.ts`）来覆盖组件的 meta。
 
 ```ts
 export const argTypes = {
@@ -377,7 +384,7 @@ export const argTypes = {
 };
 ```
 
-Also, you can use msw to mock API requests in the storybook. Creating a `MyComponent.stories.msw.ts` file to define the mock handlers.
+此外，你可以在 storybook 中使用 msw 来模拟（mock）API 请求。创建一个 `MyComponent.stories.msw.ts` 文件来定义 mock handler。
 
 ```ts
 import { HttpResponse, http } from 'msw';
@@ -388,14 +395,14 @@ export const handlers = [
 ];
 ```
 
-Don't forget to re-run the `.storybook/generate.js` script after adding, editing, or removing the above files.
+添加、编辑或移除上述文件后，别忘了重新运行 `.storybook/generate.js` 脚本。
 
 ## Nest
 
-### Nest Service Circular dependency / Nestでサービスの循環参照でエラーが起きた場合
+### Nest 服务循环依赖 / Nest 中服务循环引用导致错误时
 
 #### forwardRef
-まずは簡単に`forwardRef`を試してみる
+首先简单尝试一下 `forwardRef`
 
 ```typescript
 export class FooService {
@@ -408,7 +415,7 @@ export class FooService {
 ```
 
 #### OnModuleInit
-できなければ`OnModuleInit`を使う
+如果不行，则使用 `OnModuleInit`
 
 ```typescript
 import { Injectable, OnModuleInit } from '@nestjs/common';
@@ -417,7 +424,7 @@ import { BarService } from '@/core/BarService';
 
 @Injectable()
 export class FooService implements OnModuleInit {
-	private barService: BarService // constructorから移動してくる
+	private barService: BarService // 从 constructor 中移动过来
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -434,29 +441,29 @@ export class FooService implements OnModuleInit {
 }
 ```
 
-##### Service Unit Test
-テストで`onModuleInit`を呼び出す必要がある
+##### 服务单元测试
+测试中需要调用 `onModuleInit`
 
 ```typescript
 // import ...
 
 describe('test', () => {
 	let app: TestingModule;
-	let fooService: FooService; // for test case
-	let barService: BarService; // for test case
+	let fooService: FooService; // 用于测试用例
+	let barService: BarService; // 用于测试用例
 
 	beforeEach(async () => {
 		app = await Test.createTestingModule({
 			imports: ...,
 			providers: [
 				FooService,
-				{ // mockする (mockは必須ではないかもしれない)
+				{ // 进行 mock（mock 可能不是必须的）
 					provide: BarService,
 					useFactory: () => ({
 						incredibleMethod: jest.fn(),
 					}),
 				},
-				{ // Provideにする
+				{ // 设为 Provide
 					provide: BarService.name,
 					useExisting: BarService,
 				},
@@ -468,7 +475,7 @@ describe('test', () => {
 		fooService = app.get<FooService>(FooService);
 		barService = app.get<BarService>(BarService) as jest.Mocked<BarService>;
 
-		// onModuleInitを実行する
+		// 执行 onModuleInit
 		await fooService.onModuleInit();
 	});
 
@@ -482,28 +489,28 @@ describe('test', () => {
 })
 ```
 
-## Notes
+## 注意事项
 
-### Misskeyのドメイン固有の概念は`Mi`をprefixする
-例えばGoogleが自社サービスをMap、Earth、DriveではなくGoogle Map、Google Earth、Google Driveのように命名するのと同じ
-コード上でMisskeyのドメイン固有の概念には`Mi`をprefixすることで、他のドメインの同様の概念と区別できるほか、名前の衝突を防ぐ。
-ただし、文脈上Misskeyのものを指すことが明らかであり、名前の衝突の恐れがない場合は、一時的なローカル変数に限って`Mi`を省略してもよい。
+### Misskey 的领域特有概念应加 `Mi` 前缀
+例如，就像 Google 将自家服务命名为 Google Map、Google Earth、Google Drive 而非 Map、Earth、Drive 一样
+在代码中给 Misskey 的领域特有概念加上 `Mi` 前缀，既能与其他领域的同类概念区分，也能防止名称冲突。
+不过，如果在上下文中明显指代 Misskey 的事物且不存在名称冲突的风险，则仅限临时局部变量可以省略 `Mi`。
 
-### Misskey.jsの型生成
+### Misskey.js 的类型生成
 ```bash
 pnpm build-misskey-js-with-types
 ```
 
-### How to resolve conflictions occurred at pnpm-lock.yaml?
+### 如何解决 pnpm-lock.yaml 中发生的冲突？
 
-Just execute `pnpm` to fix it.
+只需执行 `pnpm` 即可修复。
 
-### INSERTするときにはsaveではなくinsertを使用する
-#6441
+### INSERT 时使用 insert 而非 save
+#6441（上游历史 Issue 引用）
 
 ### placeholder
-SQLをクエリビルダで組み立てる際、使用するプレースホルダは重複してはならない
-例えば
+用查询构建器（query builder）组装 SQL 时，使用的占位符（placeholder）不得重复
+例如
 ``` ts
 query.andWhere(new Brackets(qb => {
 	for (const type of ps.fileType) {
@@ -511,8 +518,8 @@ query.andWhere(new Brackets(qb => {
 	}
 }));
 ```
-と書くと、ループ中で`type`というプレースホルダが複数回使われてしまいおかしくなる
-だから次のようにする必要がある
+这样写的话，循环中 `type` 这个占位符会被多次使用从而出错
+因此需要像下面这样写
 ```ts
 query.andWhere(new Brackets(qb => {
 	for (const type of ps.fileType) {
@@ -522,28 +529,28 @@ query.andWhere(new Brackets(qb => {
 }));
 ```
 
-### Not `null` in TypeORM
+### TypeORM 中的 Not `null`
 ```ts
 const foo = await Foos.findOne({
 	bar: Not(null)
 });
 ```
-のようなクエリ(`bar`が`null`ではない)は期待通りに動作しない。
-次のようにします:
+这样的查询（`bar` 不为 `null`）不会按预期工作。
+请改为如下写法：
 ```ts
 const foo = await Foos.findOne({
 	bar: Not(IsNull())
 });
 ```
 
-### `null` in SQL
-SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
-例えば
+### SQL 中的 `null`
+发出 SQL 时，如果参数有可能为 `null`，则必须区分情况输出不同的 SQL 语句
+例如
 ``` ts
 query.where('file.folderId = :folderId', { folderId: ps.folderId });
 ```
-という処理で、`ps.folderId`が`null`だと結果的に`file.folderId = null`のようなクエリが発行されてしまい、これは正しいSQLではないので期待した結果が得られない
-だから次のようにする必要がある
+这段处理中，如果 `ps.folderId` 为 `null`，最终会发出类似 `file.folderId = null` 的查询，这并非正确的 SQL，因此无法得到预期结果
+所以需要像下面这样写
 ``` ts
 if (ps.folderId) {
 	query.where('file.folderId = :folderId', { folderId: ps.folderId });
@@ -552,98 +559,98 @@ if (ps.folderId) {
 }
 ```
 
-### `[]` in SQL
-SQLを発行する際、`IN`のパラメータが`[]`(空の配列)になる可能性のある場合はSQL文を出し分けなければならない
-例えば
+### SQL 中的 `[]`
+发出 SQL 时，如果 `IN` 的参数有可能为 `[]`（空数组），则必须区分情况输出不同的 SQL 语句
+例如
 ``` ts
 const users = await Users.find({
 	id: In(userIds)
 });
 ```
-という処理で、`userIds`が`[]`だと結果的に`user.id IN ()`のようなクエリが発行されてしまい、これは正しいSQLではないので期待した結果が得られない
-だから次のようにする必要がある
+这段处理中，如果 `userIds` 为 `[]`，最终会发出类似 `user.id IN ()` 的查询，这并非正确的 SQL，因此无法得到预期结果
+所以需要像下面这样写
 ``` ts
 const users = userIds.length > 0 ? await Users.find({
 	id: In(userIds)
 }) : [];
 ```
 
-### 配列のインデックス in SQL
-SQLでは配列のインデックスは**1始まり**。
-`[a, b, c]`の `a`にアクセスしたいなら`[0]`ではなく`[1]`と書く
+### SQL 中的数组索引
+SQL 中数组索引是**从 1 开始**的。
+若想访问 `[a, b, c]` 的 `a`，应写 `[1]` 而非 `[0]`
 
 ### null IN
-nullが含まれる可能性のあるカラムにINするときは、そのままだとおかしくなるのでORなどでnullのハンドリングをしよう。
+对可能包含 null 的列进行 IN 时，直接写会出问题，所以请用 OR 等处理 null 的情况。
 
-### enumの削除は気をつける
-enumの列挙の内容の削除は、その値をもつレコードを全て削除しないといけない
+### 删除 enum 要小心
+删除 enum 枚举项的内容时，必须删除所有具有该值的记录
 
-削除が重たかったり不可能だったりする場合は、削除しないでおく
+如果删除很重或不可行，则保留不删
 
-### Migration作成方法
-packages/backendで:
+### Migration 创建方法
+在 packages/backend 中：
 ```sh
 pnpm dlx typeorm migration:generate -d ormconfig.js -o --esm <migration name>
 ```
 
-- 生成後、ファイルをmigration下に移してください
-- 作成されたスクリプトは不必要な変更を含むため除去してください
-- `-o` (`--outputJs`) で JS 形式、`--esm` で ESM 形式に生成する。Misskey の既存 migration はすべて ESM JS なので両方のオプションが必要
+- 生成后，请将文件移动到 migration 目录下
+- 生成的脚本包含不必要的变更，请将其移除
+- `-o`（`--outputJs`）以 JS 格式生成，`--esm` 以 ESM 格式生成。Misskey 现有的 migration 全部是 ESM JS，所以这两个选项都需要
 
-### コネクションには`markRaw`せよ
-**Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。
+### 连接（connection）要 `markRaw`
+**当把 misskey.js 的连接设置为 Vue 组件的 data 选项时**，请务必用 `markRaw` 包裹。实例被不必要地响应式化（reactive）会导致 misskey.js 内部处理出现故障，并引发性能问题。需要注意的是，使用 Composition API 时不受此限制（因为响应式化是手动的）。
 
-### JSONのimportに気を付けよう
-TypeScriptでjsonをimportすると、tscでコンパイルするときにそのjsonファイルも一緒にdistディレクトリに吐き出されてしまう。この挙動により、意図せずファイルの書き換えが発生することがあるので、jsonをimportするときは書き換えられても良いものかどうか確認すること。書き換えされて欲しくない場合は、importで読み込むのではなく、`fs.readFileSync`などの関数を使って読み込むようにすればよい。
+### 注意 JSON 的 import
+在 TypeScript 中 import json 时，用 tsc 编译时该 json 文件也会被一起输出到 dist 目录。由于这一行为，可能会意外发生文件被改写的情况，所以 import json 时要确认它是否可以被改写。如果不希望被改写，则不要用 import 读取，而应使用 `fs.readFileSync` 等函数来读取。
 
-### コンポーネントのスタイル定義でmarginを持たせない
-コンポーネント自身がmarginを設定するのは問題の元となることはよく知られている
-marginはそのコンポーネントを使う側が設定する
+### 组件的样式定义中不要设置 margin
+众所周知，组件自身设置 margin 会成为问题的根源
+margin 应由使用该组件的一方来设置
 
-## その他
-### HTMLのクラス名で follow という単語は使わない
-広告ブロッカーで誤ってブロックされる
+## 其他
+### HTML 类名中不要使用 follow 这个词
+会被广告拦截器误拦截
 
-### indexというファイル名を使うな
-ESMではディレクトリインポートは廃止されているのと、ディレクトリインポートせずともファイル名が index だと何故か一部のライブラリ？でディレクトリインポートだと見做されてエラーになる
+### 不要使用名为 index 的文件名
+因为 ESM 中已废弃目录导入（directory import），而且即使不进行目录导入，文件名为 index 时也会因某些库（？）将其视为目录导入而报错
 
 ## CSS Recipe
 
-### Lighten CSS vars
+### 调亮（Lighten）CSS 变量
 
 ``` css
 color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 ```
 
-### Darken CSS vars
+### 调暗（Darken）CSS 变量
 
 ``` css
 color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 ```
 
-### Add alpha to CSS vars
+### 为 CSS 变量添加透明度（alpha）
 
 ``` css
 color: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
 ```
 
-## 考え方
-### DRYに囚われるな
-必要なのは一般化ではなく抽象化と考えます。
-盲信せず、誤った・不必要な共通化は避け、それが自然だと感じる場合は重複させる勇気を持ちましょう。
+## 设计理念
+### 不要被 DRY 束缚
+我们认为，需要的是抽象而非一般化。
+不要盲信，避免错误的、不必要的共用化；当感觉重复更自然时，要有让其重复的勇气。
 
-### Misskeyを複雑にしない実装
-それがいくら複雑であっても、Misskey固有のコンテキストと関心が分離されている(もしくは事実上分離されていると見做すことができる)実装であれば、それはMisskeyのコードベースに対する複雑性に影響を与えないと考えます。
+### 不让 Misskey 变复杂的实现
+无论某个实现多么复杂，只要它与 Misskey 特有的上下文和关注点相分离（或事实上可被视为分离），我们就认为它不会增加 Misskey 代码库的复杂性。
 
-例えるなら、VueやAiScriptといったMisskeyが使用しているライブラリの内部実装がいくら複雑だったとしても、「それを使用しているからMisskeyの実装は複雑である」ということにはならないのと同じです。
+打个比方，正如 Vue 或 AiScript 这类 Misskey 所使用的库其内部实现无论多么复杂，也不会因为「使用了它，所以 Misskey 的实现就很复杂」一样。
 
-Misskeyのドメイン知識から関心が分離されているということは、Misskeyの実装について考える時にそれらの内部実装を考慮する必要が無く、認知負荷を増やさないからです。
+与 Misskey 领域知识相分离意味着：在思考 Misskey 的实现时无需顾及这些内部实现，因而不会增加认知负荷。
 
-また重要な点は、その実装が、Misskeyリポジトリの外部にあるか・内部にあるかということや、Misskeyがメンテナンスするものか・第三者がメンテナンスするものかといったことは複雑性を考える上ではほとんど無視できるという点です。
+还有重要的一点是：在考量复杂性时，该实现位于 Misskey 仓库之外还是之内、由 Misskey 维护还是由第三方维护，这些几乎都可以忽略。
 
-もちろんその実装がMisskeyリポジトリにあり、Misskeyがメンテナンスしなければならないものは、保守のコストはかかります。
-しかし、Misskeyの本質的な設計・実装という観点で見たときは、その実装は実質的に外部ライブラリのように振る舞います。
-換言すれば「たまたまMisskeyの開発者と同じ人たちがメンテナンスしているし、たまたまMisskeyのリポジトリ内に置いてあるだけの外部ライブラリ」です。
+当然，位于 Misskey 仓库内、且必须由 Misskey 维护的实现会产生维护成本。
+但从 Misskey 本质的设计与实现的角度来看，该实现实质上表现得就像一个外部库。
+换言之，它是「只是恰好由与 Misskey 开发者相同的人来维护、只是恰好放在 Misskey 仓库内的外部库」。
 
-そのため、実装をなるべくMisskeyのドメイン知識から独立したものにすれば、Misskeyのコードベースの複雑性を上げることなく機能実装を行うことができ、お得であると言えます。
-もちろんそれにこだわって、些細な実装でもそのように分離してしまうとかえって認知負荷が増えたり、実装量が増えてメリットをデメリットが上回る場合もあるので、ケースバイケースではあります。
+因此，只要尽量让实现独立于 Misskey 的领域知识，就能在不提高 Misskey 代码库复杂性的情况下完成功能实现，可以说很划算。
+当然，如果过分拘泥于此，连琐碎的实现也要这样分离，反而会增加认知负荷、增加实现量，使弊大于利，所以要具体情况具体分析。

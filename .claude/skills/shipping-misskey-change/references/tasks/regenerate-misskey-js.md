@@ -1,67 +1,67 @@
-# misskey-js の自動生成型を再生成する
+# 重新生成 misskey-js 的自动生成类型
 
-backend の API endpoint やスキーマ (`meta` / `paramDef` / `res`) を変更した後、`packages/misskey-js/src/autogen/` の自動生成型を最新化するための手順。
+修改 backend 的 API endpoint 或 schema (`meta` / `paramDef` / `res`) 之后,用来把 `packages/misskey-js/src/autogen/` 的自动生成类型刷新到最新的步骤。
 
-**忘れると CI の `check-misskey-js-autogen` で必ず落ちる**。最頻ミスのひとつ。
+**忘了做的话 CI 的 `check-misskey-js-autogen` 必定失败**。最常见的错误之一。
 
-## いつ実行するか
+## 什么时候执行
 
-以下のいずれかに該当する変更を加えたとき:
+加入以下任意一种变更时:
 
-- 新規エンドポイント追加 (`packages/backend/src/server/api/endpoints/<category>/<name>.ts`)
-- 既存エンドポイントの `meta` (errors / res / kind / requireCredential 等) を変更
-- 既存エンドポイントの `paramDef` (入力 schema) を変更
-- packed entity (`packages/backend/src/models/json-schema/*.ts`) を変更
+- 新增 endpoint (`packages/backend/src/server/api/endpoints/<category>/<name>.ts`)
+- 修改既有 endpoint 的 `meta` (errors / res / kind / requireCredential 等)
+- 修改既有 endpoint 的 `paramDef` (输入 schema)
+- 修改 packed entity (`packages/backend/src/models/json-schema/*.ts`)
 
-実質「`packages/backend/src/server/api/` 配下を触ったら必ず」と考えてよい。
+实质上可以认为「只要动了 `packages/backend/src/server/api/` 下面的东西就必须执行」。
 
-## 実行コマンド
+## 执行命令
 
 ```bash
-# リポジトリルートから実行する
+# 从仓库根目录执行
 pnpm build-misskey-js-with-types
 ```
 
-内部で以下が一括実行される:
+内部会一并执行以下步骤:
 
-1. backend ビルド (`pnpm --filter backend build`)
-2. OpenAPI spec 生成 (`packages/backend/built/api.json`)
-3. misskey-js 用 schema 生成 (`packages/misskey-js/generator/api.json`)
-4. misskey-js の TypeScript 型再生成 (`packages/misskey-js/src/autogen/{types,entities,endpoint,models,apiClientJSDoc}.ts`)
-5. misskey-js ビルド + API extractor
+1. backend 构建 (`pnpm --filter backend build`)
+2. 生成 OpenAPI spec (`packages/backend/built/api.json`)
+3. 生成 misskey-js 用 schema (`packages/misskey-js/generator/api.json`)
+4. 重新生成 misskey-js 的 TypeScript 类型 (`packages/misskey-js/src/autogen/{types,entities,endpoint,models,apiClientJSDoc}.ts`)
+5. misskey-js 构建 + API extractor
 
-実行時間は 1-3 分程度。タイムアウト警告が出る場合は `--timeout=600000` 相当の長めの設定を使う。
+执行时间约 1-3 分钟。出现超时警告时,使用相当于 `--timeout=600000` 的较长设置。
 
-## 実行後の確認
+## 执行后的确认
 
 ```bash
-# 何が変わったかを軽く確認
+# 简单确认改了什么
 git status --short -- packages/misskey-js/
 git diff --stat -- packages/misskey-js/src/autogen/
 
-# 内容を見たい場合
+# 想看具体内容时
 git diff -- packages/misskey-js/src/autogen/
 ```
 
-## 差分のパターン
+## 差分的模式
 
-- **差分なし** → backend の変更は misskey-js の公開型に影響していない (内部リファクタなど)。追加コミット不要
-- **差分あり** → `packages/misskey-js/src/autogen/` 配下のファイルを **必ず commit に含める**
+- **无差分** → backend 的变更没有影响 misskey-js 的公开类型 (内部重构等)。无需额外 commit
+- **有差分** → **必须把** `packages/misskey-js/src/autogen/` 下的文件 **纳入 commit**
 
   ```bash
   git add packages/misskey-js/src/autogen/
   ```
 
-  `api.json` の差分が大きい場合は、API endpoint 側の `meta` / `paramDef` / `res` 定義が想定通りか確認する。
+  如果 `api.json` 的差分很大,确认 API endpoint 一侧的 `meta` / `paramDef` / `res` 定义是否符合预期。
 
 ## 注意
 
-- このコマンドは **backend 編集後の確認** が目的。backend を変更していないのに走らせるとビルドキャッシュ次第で no-op になる
-- 実行中は `packages/backend/built/` や `packages/misskey-js/built/` などの中間生成物が更新されるが、これらは `.gitignore` 対象
-- 生成物以外 (`packages/misskey-js/src/` のうち `autogen/` 以外) に予期せぬ差分が出た場合は、ローカルの編集が混入している可能性があるため、一旦中止して原因を調査する
-- `packages/misskey-js/` 配下は **MIT ライセンスのサブパッケージ** なので、`autogen/` ファイルには AGPL の SPDX ヘッダーを付けない / 不要
+- 这条命令的目的是 **backend 编辑后的确认**。没改 backend 却运行它,视构建缓存而定会变成 no-op
+- 执行过程中 `packages/backend/built/` 和 `packages/misskey-js/built/` 等中间产物会被更新,但它们属于 `.gitignore` 对象
+- 如果在生成物之外 (`packages/misskey-js/src/` 中 `autogen/` 以外的部分) 出现意料之外的差分,可能混入了本地编辑,先中止并调查原因
+- `packages/misskey-js/` 下属于 **MIT 许可的子包**,所以 `autogen/` 文件不加 / 不需要 AGPL 的 SPDX 头
 
-## CI で落ちた場合のメッセージ例
+## CI 失败时的消息示例
 
 ```
 CI: check-misskey-js-autogen
@@ -70,9 +70,9 @@ CI: check-misskey-js-autogen
 > and commit the changes under packages/misskey-js/src/autogen/.
 ```
 
-ローカルでもう一度上記コマンドを実行 → 差分を commit → push し直す。
+在本地再执行一次上述命令 → commit 差分 → 重新 push。
 
-## 関連
+## 相关
 
-- API endpoint 追加の全手順 → [working-on-backend/references/tasks/adding-api-endpoint.md](../../../working-on-backend/references/tasks/adding-api-endpoint.md)
-- `meta` / `paramDef` / `res` の規約 → [working-on-backend/references/knowledge/api-meta-paramdef.md](../../../working-on-backend/references/knowledge/api-meta-paramdef.md)
+- 新增 API endpoint 的完整步骤 → [working-on-backend/references/tasks/adding-api-endpoint.md](../../../working-on-backend/references/tasks/adding-api-endpoint.md)
+- `meta` / `paramDef` / `res` 的规约 → [working-on-backend/references/knowledge/api-meta-paramdef.md](../../../working-on-backend/references/knowledge/api-meta-paramdef.md)

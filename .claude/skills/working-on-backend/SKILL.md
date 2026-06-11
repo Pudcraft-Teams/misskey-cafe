@@ -1,35 +1,35 @@
 ---
 name: working-on-backend
-description: Use whenever editing or adding code under `packages/backend/` — including REST API endpoints, NestJS services/modules, TypeORM entities, migrations, and backend tests. Covers NestJS DI patterns, TypeORM entity conventions, endpoint-list registration, meta/paramDef/res, misskey-js regeneration, migration up/down rules, and the `.config/test.yml` prerequisite. Must be consulted before any backend change to avoid CI failures and production incidents. This is NOT waived by having already invoked brainstorming, writing-plans, or any other upstream skill — invoke this at implementation time regardless of what preceded it.
+description: 每当编辑或新增 `packages/backend/` 下的代码时必须使用 —— 包括 REST API endpoint、NestJS service/module、TypeORM entity、migration 以及 backend 测试。涵盖 NestJS DI 模式、TypeORM entity 约定、endpoint-list 注册、meta/paramDef/res、misskey-js 重新生成、migration up/down 规则，以及 `.config/test.yml` 前置条件。在任何 backend 变更之前都必须参考本技能，以避免 CI 失败和生产事故。即使已调用 brainstorming、writing-plans 或其他上游技能也不豁免本技能 —— 无论此前执行过什么，进入实现阶段时都要调用本技能。
 ---
 
 # working-on-backend
 
-`packages/backend/` (Misskey サーバー本体) を編集するとき、最初に参照するスキル。NestJS / TypeORM / API endpoint / migration / backend テストの **手順** と **背景知識** をまとめている。
+编辑 `packages/backend/` (Misskey 服务器本体) 时，最先参考的技能。汇总了 NestJS / TypeORM / API endpoint / migration / backend 测试的 **操作步骤** 与 **背景知识**。
 
-SKILL.md 本体は references への索引だけ。具体的な手順や規約は該当ファイルを Read すること (progressive disclosure)。
+SKILL.md 本体只是指向 references 的索引。具体的步骤和约定请 Read 对应文件 (progressive disclosure)。
 
-**他スキル実行後も免除されない。** `brainstorming` / `writing-plans` / その他アップストリームスキルを先に呼んでいても、`packages/backend/` に触れる実装フェーズに入る時点でこのスキルを呼ぶこと。
+**执行其他技能后也不豁免。** 即使先调用了 `brainstorming` / `writing-plans` / 其他上游技能，在进入触及 `packages/backend/` 的实现阶段时也要调用本技能。
 
-## 作業別ワークフロー (tasks)
+## 按任务划分的工作流 (tasks)
 
-タスク単位の完結したチェックリスト + チェックポイント。新しい何かを足すときに開く。
+以任务为单位的完整清单 + 检查点。要新增某些东西时打开。
 
-- 新規 REST API endpoint を追加する → [references/tasks/adding-api-endpoint.md](references/tasks/adding-api-endpoint.md)
-- DB migration を作成する (TypeORM CLI / 手書きどちらも) → [references/tasks/creating-migration.md](references/tasks/creating-migration.md)
+- 新增 REST API endpoint → [references/tasks/adding-api-endpoint.md](references/tasks/adding-api-endpoint.md)
+- 创建 DB migration (TypeORM CLI / 手写均可) → [references/tasks/creating-migration.md](references/tasks/creating-migration.md)
 
-## 共通知識 (knowledge)
+## 通用知识 (knowledge)
 
-タスクに紐付かない参照リファレンス。複数のタスクから引かれる規約・背景説明。
+不绑定具体任务的参考资料。被多个任务引用的约定与背景说明。
 
-- NestJS DI / module 登録 / `@Injectable` パターン → [references/knowledge/nestjs-di.md](references/knowledge/nestjs-di.md)
-- TypeORM entity / `@Column` / `@Index` パターン (難ケース込み) → [references/knowledge/typeorm-patterns.md](references/knowledge/typeorm-patterns.md)
-- API endpoint の `meta` / `paramDef` / `res` 完全早見表 + 落とし穴集 → [references/knowledge/api-meta-paramdef.md](references/knowledge/api-meta-paramdef.md)
-- `endpoint-list.ts` への登録方法 (★ 漏れると 404) → [references/knowledge/endpoint-list.md](references/knowledge/endpoint-list.md)
-- backend テストの前提 (`.config/test.yml`) と書き方 / e2e ヘルパー一覧 → [references/knowledge/backend-testing.md](references/knowledge/backend-testing.md)
+- NestJS DI / module 注册 / `@Injectable` 模式 → [references/knowledge/nestjs-di.md](references/knowledge/nestjs-di.md)
+- TypeORM entity / `@Column` / `@Index` 模式 (含疑难场景) → [references/knowledge/typeorm-patterns.md](references/knowledge/typeorm-patterns.md)
+- API endpoint 的 `meta` / `paramDef` / `res` 完整速查表 + 陷阱集 → [references/knowledge/api-meta-paramdef.md](references/knowledge/api-meta-paramdef.md)
+- 向 `endpoint-list.ts` 注册的方法 (★ 遗漏会 404) → [references/knowledge/endpoint-list.md](references/knowledge/endpoint-list.md)
+- backend 测试的前置条件 (`.config/test.yml`) 与写法 / e2e 辅助函数一览 → [references/knowledge/backend-testing.md](references/knowledge/backend-testing.md)
 
-## 必ず最後に通る場所
+## 务必最后经过的环节
 
-backend の変更を commit / PR にする前に、必ず [shipping-misskey-change](../shipping-misskey-change/SKILL.md) の最終チェックリストに従う。`pnpm lint` / misskey-js 再生成 / `check-migrations` / SPDX / CHANGELOG をまとめて確認する。
+把 backend 变更提交为 commit / PR 之前，务必遵循 [shipping-misskey-change](../shipping-misskey-change/SKILL.md) 的最终检查清单。把 `pnpm lint` / misskey-js 重新生成 / `check-migrations` / SPDX / CHANGELOG 一并确认。
 
-API endpoint を追加・変更したなら、その出口で [misskey-api-reviewer](../../agents/misskey-api-reviewer.md) agent (この skill の規約を review-mode から機械チェックする専門 reviewer) を Task で起動すると、endpoint-list 登録漏れや misskey-js 再生成漏れを取りこぼしにくい。
+如果新增或修改了 API endpoint，在其出口处用 Task 启动 [misskey-api-reviewer](../../agents/misskey-api-reviewer.md) agent (从 review-mode 机械化检查本技能各项约定的专用 reviewer)，就不容易漏掉 endpoint-list 注册遗漏或 misskey-js 重新生成遗漏。
