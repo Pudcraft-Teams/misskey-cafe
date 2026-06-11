@@ -23,3 +23,19 @@ export function char2fluentEmojiFilePath(char: string): string {
 	const fileName = codes.join('-');
 	return `${fluentEmojiPngBase}/${fileName}.png`;
 }
+
+/**
+ * 与 backend(ReactionService.normalize)一致地剥离异体字选择符(VS16),吸收同一表情的不同写法。
+ */
+export function stripEmojiVS16(char: string): string {
+	return char.match('\u200d') ? char : char.replace(/\ufe0f/g, '');
+}
+
+/**
+ * 判断该 Unicode 表情是否已被实例管理员禁用。
+ */
+export function isDisabledUnicodeEmoji(char: string, disabledUnicodeEmojis: string[] | undefined): boolean {
+	if (disabledUnicodeEmojis == null || disabledUnicodeEmojis.length === 0) return false;
+	const stripped = stripEmojiVS16(char);
+	return disabledUnicodeEmojis.some(x => stripEmojiVS16(x.trim()) === stripped);
+}

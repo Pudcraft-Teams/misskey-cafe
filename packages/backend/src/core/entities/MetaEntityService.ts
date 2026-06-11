@@ -77,6 +77,7 @@ export class MetaEntityService {
 			uri: this.config.url,
 			description: instance.description,
 			langs: instance.langs,
+			disabledUnicodeEmojis: instance.disabledUnicodeEmojis,
 			tosUrl: instance.termsOfServiceUrl,
 			repositoryUrl: instance.repositoryUrl,
 			feedbackUrl: instance.feedbackUrl,

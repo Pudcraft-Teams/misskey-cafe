@@ -4,7 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img v-if="shouldMute" :class="$style.root" src="/client-assets/unknown.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<svg v-if="shouldHideAsDisabled" :class="$style.disabledBox" viewBox="0 0 24 24" aria-hidden="true">
+	<rect x="2.5" y="2.5" width="19" height="19" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+	<path d="M8.5 8.5l7 7m0-7l-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+</svg>
+<img v-else-if="shouldMute" :class="$style.root" src="/client-assets/unknown.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
 <img v-else-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
 <span v-else :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ colorizedNativeEmoji }}</span>
 </template>
@@ -21,6 +25,7 @@ import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
 import { addToEmojiPalette } from '@/utility/emoji-palette.js';
+import { isUnicodeEmojiDisabled } from '@/utility/disabled-unicode-emojis.js';
 
 const props = defineProps<{
 	emoji: string;
@@ -37,6 +42,9 @@ const useOsNativeEmojis = computed(() => prefer.s.emojiStyle === 'native');
 const url = computed(() => char2path(props.emoji));
 const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
 const isMuted = checkMutedEmoji(props.emoji);
+const isDisabled = computed(() => isUnicodeEmojiDisabled(props.emoji));
+// 被禁用的表情不绑定点击菜单(菜单 label 会原样显示表情本体,造成泄露)
+const shouldHideAsDisabled = computed(() => isDisabled.value && !props.ignoreMuted);
 const shouldMute = computed(() => isMuted.value && !props.ignoreMuted);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
@@ -132,5 +140,12 @@ function onClick(ev: PointerEvent) {
 .root {
 	height: 1.25em;
 	vertical-align: -0.25em;
+}
+
+.disabledBox {
+	width: 1.25em;
+	height: 1.25em;
+	vertical-align: -0.25em;
+	opacity: 0.5;
 }
 </style>

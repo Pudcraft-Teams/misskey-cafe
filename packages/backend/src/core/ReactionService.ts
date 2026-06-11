@@ -161,6 +161,15 @@ export class ReactionService {
 				}
 			} else {
 				reaction = this.normalize(reaction);
+
+				// FALLBACK(点赞 ❤)不在禁用范围内
+				if (user.host == null && reaction !== FALLBACK && this.meta.disabledUnicodeEmojis.length > 0) {
+					// 管理员输入不能直接过 normalize()(非表情输入会被它转成 FALLBACK),只对齐其异体字选择符剥离逻辑
+					const strip = (s: string) => s.match('\u200d') ? s : s.replace(/\ufe0f/g, '');
+					if (this.meta.disabledUnicodeEmojis.some(x => strip(x.trim()) === reaction)) {
+						throw new IdentifiableError('e055d2ad-8419-404b-84f8-333af0f33191', 'Cannot react with a unicode emoji that is disabled on this server.');
+					}
+				}
 			}
 		}
 

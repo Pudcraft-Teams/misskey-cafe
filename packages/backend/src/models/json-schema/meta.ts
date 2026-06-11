@@ -49,6 +49,14 @@ export const packedMetaLiteSchema = {
 				optional: false, nullable: false,
 			},
 		},
+		disabledUnicodeEmojis: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
 		tosUrl: {
 			type: 'string',
 			optional: false, nullable: true,
