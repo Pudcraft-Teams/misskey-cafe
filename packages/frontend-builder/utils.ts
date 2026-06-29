@@ -8,5 +8,6 @@ export function assertNever(x: never): never {
 	throw new Error(`Unexpected type: ${(x as any)?.type ?? x}`);
 }
 
-export function assertType<T>(_node: unknown): asserts node is T {
+export function assertType<T>(node: unknown): asserts node is T {
+	void node;
 }

@@ -13,7 +13,7 @@ function get(key: string) {
 	return JSON.parse(value);
 }
 
-function set(key: string, value: any) {
+function set(key: string, value: unknown) {
 	localStorage.setItem(key, JSON.stringify(value));
 }
 
@@ -45,11 +45,11 @@ export async function fetchCustomEmojis(force = false) {
 	set('lastEmojisFetchedAt', now);
 }
 
-let cachedTags;
-export function getCustomEmojiTags() {
+let cachedTags: string[] | undefined;
+export function getCustomEmojiTags(): string[] {
 	if (cachedTags) return cachedTags;
 
-	const tags = new Set();
+	const tags = new Set<string>();
 	for (const emoji of customEmojis.value) {
 		for (const tag of emoji.aliases) {
 			tags.add(tag);
